@@ -1,0 +1,46 @@
+- generic [ref=e5]:
+  - complementary [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]: Mashallah Medical Complex
+      - generic [ref=e9]: Lab Report System
+    - navigation [ref=e10]:
+      - link "Dashboard" [ref=e11] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Reports" [ref=e12] [cursor=pointer]:
+        - /url: /reports
+      - link "Patients" [ref=e13] [cursor=pointer]:
+        - /url: /patients
+      - link "Settings" [ref=e14] [cursor=pointer]:
+        - /url: /settings
+    - link "+ New Report" [ref=e16] [cursor=pointer]:
+      - /url: /reports/new
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - heading "Reports" [level=1] [ref=e20]
+        - link "+ New Report" [ref=e21] [cursor=pointer]:
+          - /url: /reports/new
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]: Search
+          - textbox "Search" [active] [ref=e26]:
+            - /placeholder: Lab no, patient name, or phone...
+        - generic [ref=e27]:
+          - generic [ref=e28]: Doctor
+          - combobox "Doctor" [ref=e29]:
+            - option "All Doctors" [selected]
+            - option "Self"
+            - option "Abu Bakar"
+            - option "cat"
+        - generic [ref=e30]:
+          - generic [ref=e31]: Status
+          - combobox "Status" [ref=e32]:
+            - option "All Statuses" [selected]
+            - option "Draft"
+            - option "Final"
+        - generic [ref=e33]:
+          - generic [ref=e34]: From Date
+          - textbox "From Date" [ref=e35]
+        - generic [ref=e36]:
+          - generic [ref=e37]: To Date
+          - textbox "To Date" [ref=e38]

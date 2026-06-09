@@ -58,7 +58,7 @@ CREATE INDEX idx_templates_active   ON test_templates (is_active);
 -- Lab reports — one row per issued report
 CREATE TABLE reports (
   id          SERIAL PRIMARY KEY,
-  lab_no      VARCHAR(50) NOT NULL UNIQUE,
+  lab_no      VARCHAR(50),
   patient_id  INTEGER NOT NULL REFERENCES patients(id),
   doctor_id   INTEGER REFERENCES doctors(id),
   report_date DATE NOT NULL DEFAULT CURRENT_DATE,

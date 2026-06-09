@@ -19,15 +19,210 @@ router.get('/next-lab-no', async (req, res) => {
   }
 });
 
+// Paginated list of reports with optional filters
+// Query params: page, limit, q (search), from, to, doctor_id, status
+router.get('/', async (req, res) => {
+  const page      = Math.max(1, parseInt(req.query.page)  || 1);
+  const limit     = Math.max(1, parseInt(req.query.limit) || 20);
+  const offset    = (page - 1) * limit;
+  const search    = req.query.q     || '';
+  const fromDate  = req.query.from  || '';
+  const toDate    = req.query.to    || '';
+  const doctorId  = req.query.doctor_id || '';
+  const status    = req.query.status    || '';
+
+  // Build the WHERE clauses dynamically based on which filters are active
+  const conditions = [];
+  const params     = [];
+
+  if (search) {
+    params.push(`%${search}%`);
+    const idx = params.length;
+    // Search lab_no, patient name, or patient phone
+    conditions.push(
+      `(r.lab_no ILIKE $${idx} OR p.name ILIKE $${idx} OR p.phone ILIKE $${idx})`
+    );
+  }
+
+  if (fromDate) {
+    params.push(fromDate);
+    conditions.push(`r.report_date >= $${params.length}`);
+  }
+
+  if (toDate) {
+    params.push(toDate);
+    conditions.push(`r.report_date <= $${params.length}`);
+  }
+
+  if (doctorId) {
+    params.push(doctorId);
+    conditions.push(`r.doctor_id = $${params.length}`);
+  }
+
+  if (status) {
+    params.push(status);
+    conditions.push(`r.status = $${params.length}`);
+  }
+
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  try {
+    // Count total matching rows for pagination metadata
+    const countResult = await db.query(
+      `SELECT COUNT(*) AS total
+       FROM reports r
+       JOIN patients p ON p.id = r.patient_id
+       ${whereClause}`,
+      params
+    );
+
+    const total      = parseInt(countResult.rows[0].total);
+    const totalPages = Math.ceil(total / limit);
+
+    // Fetch the page of results with patient and doctor names joined in
+    const listParams = [...params, limit, offset];
+    const listResult = await db.query(
+      `SELECT
+         r.id,
+         r.lab_no,
+         r.report_date,
+         r.status,
+         r.created_at,
+         p.id   AS patient_id,
+         p.name AS patient_name,
+         p.age  AS patient_age,
+         p.gender AS patient_gender,
+         p.phone AS patient_phone,
+         d.id   AS doctor_id,
+         d.name AS doctor_name
+       FROM reports r
+       JOIN patients p ON p.id = r.patient_id
+       LEFT JOIN doctors d ON d.id = r.doctor_id
+       ${whereClause}
+       ORDER BY r.report_date DESC, r.id DESC
+       LIMIT $${listParams.length - 1} OFFSET $${listParams.length}`,
+      listParams
+    );
+
+    res.json({
+      reports:     listResult.rows,
+      total,
+      page,
+      totalPages,
+      limit,
+    });
+  } catch (error) {
+    console.error('Failed to list reports:', error);
+    res.status(500).json({ error: 'Could not load reports', code: 'QUERY_FAILED' });
+  }
+});
+
+// Get a single report with patient, doctor, and all results joined
+// Used by the View Report and Edit Report pages
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Load the report row with patient and doctor info
+    const reportResult = await db.query(
+      `SELECT
+         r.id,
+         r.lab_no,
+         r.report_date,
+         r.status,
+         r.created_at,
+         p.id     AS patient_id,
+         p.name   AS patient_name,
+         p.age    AS patient_age,
+         p.gender AS patient_gender,
+         p.phone  AS patient_phone,
+         d.id     AS doctor_id,
+         d.name   AS doctor_name
+       FROM reports r
+       JOIN patients p ON p.id = r.patient_id
+       LEFT JOIN doctors d ON d.id = r.doctor_id
+       WHERE r.id = $1`,
+      [id]
+    );
+
+    if (reportResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Report not found', code: 'NOT_FOUND' });
+    }
+
+    const row = reportResult.rows[0];
+
+    // Load all test results for this report, joined with their template metadata
+    const resultsResult = await db.query(
+      `SELECT
+         rr.id,
+         rr.template_id,
+         rr.result_data,
+         rr.display_order,
+         tt.test_name,
+         tt.category,
+         tt.report_type
+       FROM report_results rr
+       JOIN test_templates tt ON tt.id = rr.template_id
+       WHERE rr.report_id = $1
+       ORDER BY rr.display_order ASC`,
+      [id]
+    );
+
+    // Shape the response to match the spec
+    const report = {
+      id:          row.id,
+      lab_no:      row.lab_no,
+      report_date: row.report_date,
+      status:      row.status,
+      created_at:  row.created_at,
+      patient: {
+        id:     row.patient_id,
+        name:   row.patient_name,
+        age:    row.patient_age,
+        gender: row.patient_gender,
+        phone:  row.patient_phone,
+      },
+      doctor: {
+        id:   row.doctor_id,
+        name: row.doctor_name,
+      },
+      results: resultsResult.rows,
+    };
+
+    res.json(report);
+  } catch (error) {
+    console.error('Failed to load report:', error);
+    res.status(500).json({ error: 'Could not load report', code: 'QUERY_FAILED' });
+  }
+});
+
+// Delete a report (and its results via CASCADE)
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await db.query(
+      'DELETE FROM reports WHERE id = $1 RETURNING id',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Report not found', code: 'NOT_FOUND' });
+    }
+
+    res.json({ success: true, id: parseInt(id) });
+  } catch (error) {
+    console.error('Failed to delete report:', error);
+    res.status(500).json({ error: 'Could not delete report', code: 'DELETE_FAILED' });
+  }
+});
+
 // Create a new report with all its test results in a single transaction
 // Body: { lab_no, patient_id, doctor_id, report_date, status, results: [...] }
 router.post('/', async (req, res) => {
   const { lab_no, patient_id, doctor_id, report_date, status, results } = req.body;
 
   // Validate required fields before touching the database
-  if (!lab_no || lab_no.toString().trim() === '') {
-    return res.status(400).json({ error: 'Lab number is required', code: 'LAB_NO_REQUIRED' });
-  }
   if (!patient_id) {
     return res.status(400).json({ error: 'Patient is required', code: 'PATIENT_REQUIRED' });
   }
@@ -85,14 +280,6 @@ router.post('/', async (req, res) => {
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Failed to create report:', error);
-
-    // PostgreSQL unique constraint violation — lab_no already exists
-    if (error.code === '23505') {
-      return res.status(400).json({
-        error: `Lab number "${lab_no}" is already in use. Please use a different number.`,
-        code:  'LAB_NO_DUPLICATE',
-      });
-    }
 
     res.status(500).json({ error: 'Could not create report', code: 'CREATE_FAILED' });
   } finally {
