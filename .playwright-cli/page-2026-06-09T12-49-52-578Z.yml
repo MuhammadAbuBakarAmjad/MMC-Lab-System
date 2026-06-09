@@ -1,0 +1,399 @@
+- generic [ref=e5]:
+  - complementary [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]: Mashallah Medical Complex
+      - generic [ref=e9]: Lab Report System
+    - navigation [ref=e10]:
+      - link "Dashboard" [ref=e11] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Reports" [ref=e12] [cursor=pointer]:
+        - /url: /reports
+      - link "Patients" [ref=e13] [cursor=pointer]:
+        - /url: /patients
+      - link "Settings" [ref=e14] [cursor=pointer]:
+        - /url: /settings
+    - link "+ New Report" [ref=e16] [cursor=pointer]:
+      - /url: /reports/new
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - heading "New Report" [level=1] [ref=e19]
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - generic [ref=e23]: Patient *
+            - generic [ref=e390]:
+              - text: Muhammad Ali Updated
+              - generic [ref=e391]: "ID: 1"
+              - button "Remove selected patient" [ref=e392]: ×
+          - generic [ref=e27]:
+            - generic [ref=e28]: Referred By
+            - textbox "Search by doctor name" [ref=e31]
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]: Report Date
+            - textbox [ref=e35]: 2026-06-09
+          - generic [ref=e36]:
+            - generic [ref=e37]: Lab No *
+            - textbox "Auto-generated" [ref=e38]: "2"
+      - generic [ref=e39]:
+        - heading "Select Tests" [level=2] [ref=e40]
+        - button "BIOCHEMISTRY ▼" [ref=e42]:
+          - generic [ref=e43]: BIOCHEMISTRY
+          - generic [ref=e44]: ▼
+        - button "BLOOD GLUCOSE ▼" [ref=e46]:
+          - generic [ref=e47]: BLOOD GLUCOSE
+          - generic [ref=e48]: ▼
+        - button "FLUID EXAMINATION ▼" [ref=e50]:
+          - generic [ref=e51]: FLUID EXAMINATION
+          - generic [ref=e52]: ▼
+        - generic [ref=e53]:
+          - button "HAEMATOLOGY ▲" [ref=e88]:
+            - generic [ref=e55]: HAEMATOLOGY
+            - generic [ref=e56]: ▲
+          - generic [ref=e89]:
+            - generic [ref=e90]:
+              - generic [ref=e91] [cursor=pointer]:
+                - checkbox "CBC (Complete Blood Count) (standard)" [checked] [ref=e92]
+                - generic [ref=e93]: CBC (Complete Blood Count)
+                - generic [ref=e94]: (standard)
+              - table [ref=e127]:
+                - rowgroup [ref=e128]:
+                  - row "Test Name Result Unit Normal Value" [ref=e129]:
+                    - columnheader "Test Name" [ref=e130]
+                    - columnheader "Result" [ref=e131]
+                    - columnheader "Unit" [ref=e132]
+                    - columnheader "Normal Value" [ref=e133]
+                - rowgroup [ref=e134]:
+                  - row "T.L.C. x10*3/cmm 4.0 - 11.0" [ref=e135]:
+                    - cell "T.L.C." [ref=e136]
+                    - cell [ref=e137]:
+                      - spinbutton [ref=e138]
+                    - cell "x10*3/cmm" [ref=e139]
+                    - cell "4.0 - 11.0" [ref=e140]
+                  - 'row "Haemoglobin g/dl M: 13.0 - 17.5 F: 11.5 - 14.5" [ref=e141]':
+                    - cell "Haemoglobin" [ref=e142]
+                    - cell [ref=e143]:
+                      - spinbutton [ref=e144]
+                    - cell "g/dl" [ref=e145]
+                    - 'cell "M: 13.0 - 17.5 F: 11.5 - 14.5" [ref=e146]'
+                  - row "RBC x10*12/l 4.2 - 6.0" [ref=e147]:
+                    - cell "RBC" [ref=e148]
+                    - cell [ref=e149]:
+                      - spinbutton [ref=e150]
+                    - cell "x10*12/l" [ref=e151]
+                    - cell "4.2 - 6.0" [ref=e152]
+                  - row "HCT % 38.7 - 50.7" [ref=e153]:
+                    - cell "HCT" [ref=e154]
+                    - cell [ref=e155]:
+                      - spinbutton [ref=e156]
+                    - cell "%" [ref=e157]
+                    - cell "38.7 - 50.7" [ref=e158]
+                  - row "MCH pg 25.1 - 31.6" [ref=e159]:
+                    - cell "MCH" [ref=e160]
+                    - cell [ref=e161]:
+                      - spinbutton [ref=e162]
+                    - cell "pg" [ref=e163]
+                    - cell "25.1 - 31.6" [ref=e164]
+                  - row "MCHC g/dl 30 - 36" [ref=e165]:
+                    - cell "MCHC" [ref=e166]
+                    - cell [ref=e167]:
+                      - spinbutton [ref=e168]
+                    - cell "g/dl" [ref=e169]
+                    - cell "30 - 36" [ref=e170]
+                  - row "Platelets x10*3/cmm 150 - 450" [ref=e171]:
+                    - cell "Platelets" [ref=e172]
+                    - cell [ref=e173]:
+                      - spinbutton [ref=e174]
+                    - cell "x10*3/cmm" [ref=e175]
+                    - cell "150 - 450" [ref=e176]
+                  - row "DLC - Neutrophils % 35.0 - 76.0" [ref=e177]:
+                    - cell "DLC - Neutrophils" [ref=e178]
+                    - cell [ref=e179]:
+                      - spinbutton [ref=e180]
+                    - cell "%" [ref=e181]
+                    - cell "35.0 - 76.0" [ref=e182]
+                  - row "DLC - Lymphocytes % 18.0 - 45.0" [ref=e183]:
+                    - cell "DLC - Lymphocytes" [ref=e184]
+                    - cell [ref=e185]:
+                      - spinbutton [ref=e186]
+                    - cell "%" [ref=e187]
+                    - cell "18.0 - 45.0" [ref=e188]
+                  - row "DLC - Monocytes % 4.0 - 10.0" [ref=e189]:
+                    - cell "DLC - Monocytes" [ref=e190]
+                    - cell [ref=e191]:
+                      - spinbutton [ref=e192]
+                    - cell "%" [ref=e193]
+                    - cell "4.0 - 10.0" [ref=e194]
+                  - row "DLC - Eosinophils % 1.0 - 6.0" [ref=e195]:
+                    - cell "DLC - Eosinophils" [ref=e196]
+                    - cell [ref=e197]:
+                      - spinbutton [ref=e198]
+                    - cell "%" [ref=e199]
+                    - cell "1.0 - 6.0" [ref=e200]
+            - generic [ref=e96] [cursor=pointer]:
+              - checkbox "ESR (standard)" [ref=e97]
+              - generic [ref=e98]: ESR
+              - generic [ref=e99]: (standard)
+            - generic [ref=e101] [cursor=pointer]:
+              - checkbox "Haemoglobin (HB) (standard)" [ref=e102]
+              - generic [ref=e103]: Haemoglobin (HB)
+              - generic [ref=e104]: (standard)
+            - generic [ref=e106] [cursor=pointer]:
+              - checkbox "Blood Group (qualitative)" [ref=e107]
+              - generic [ref=e108]: Blood Group
+              - generic [ref=e109]: (qualitative)
+            - generic [ref=e111] [cursor=pointer]:
+              - checkbox "Malarial Parasite (MP) (qualitative)" [ref=e112]
+              - generic [ref=e113]: Malarial Parasite (MP)
+              - generic [ref=e114]: (qualitative)
+            - generic [ref=e116] [cursor=pointer]:
+              - checkbox "HB + RPM (standard)" [ref=e117]
+              - generic [ref=e118]: HB + RPM
+              - generic [ref=e119]: (standard)
+            - generic [ref=e121] [cursor=pointer]:
+              - checkbox "PT-APTT (standard)" [ref=e122]
+              - generic [ref=e123]: PT-APTT
+              - generic [ref=e124]: (standard)
+        - button "HORMONES ▼" [ref=e58]:
+          - generic [ref=e59]: HORMONES
+          - generic [ref=e60]: ▼
+        - button "LIVER FUNCTION TESTS ▼" [ref=e62]:
+          - generic [ref=e63]: LIVER FUNCTION TESTS
+          - generic [ref=e64]: ▼
+        - button "RENAL FUNCTION TESTS ▼" [ref=e66]:
+          - generic [ref=e67]: RENAL FUNCTION TESTS
+          - generic [ref=e68]: ▼
+        - button "SEMEN ANALYSIS ▼" [ref=e70]:
+          - generic [ref=e71]: SEMEN ANALYSIS
+          - generic [ref=e72]: ▼
+        - generic [ref=e73]:
+          - button "SEROLOGY ▲" [ref=e201]:
+            - generic [ref=e75]: SEROLOGY
+            - generic [ref=e76]: ▲
+          - generic [ref=e202]:
+            - generic [ref=e204] [cursor=pointer]:
+              - checkbox "Serology Panel (HBsAg, Anti-HCV) (qualitative)" [ref=e205]
+              - generic [ref=e206]: Serology Panel (HBsAg, Anti-HCV)
+              - generic [ref=e207]: (qualitative)
+            - generic [ref=e208]:
+              - generic [ref=e209] [cursor=pointer]:
+                - checkbox "HBsAg (qualitative)" [checked] [ref=e210]
+                - generic [ref=e211]: HBsAg
+                - generic [ref=e212]: (qualitative)
+              - table [ref=e270]:
+                - rowgroup [ref=e271]:
+                  - row "Test Name Result" [ref=e272]:
+                    - columnheader "Test Name" [ref=e273]
+                    - columnheader "Result" [ref=e274]
+                - rowgroup [ref=e275]:
+                  - row "HBsAg (Screening) -- Select --" [ref=e276]:
+                    - cell "HBsAg (Screening)" [ref=e277]
+                    - cell "-- Select --" [ref=e278]:
+                      - combobox [ref=e279]:
+                        - option "-- Select --" [selected]
+                        - option "Reactive"
+                        - option "Non-Reactive"
+            - generic [ref=e214] [cursor=pointer]:
+              - checkbox "Anti-HCV (qualitative)" [ref=e215]
+              - generic [ref=e216]: Anti-HCV
+              - generic [ref=e217]: (qualitative)
+            - generic [ref=e219] [cursor=pointer]:
+              - checkbox "Anti-HIV (qualitative)" [ref=e220]
+              - generic [ref=e221]: Anti-HIV
+              - generic [ref=e222]: (qualitative)
+            - generic [ref=e224] [cursor=pointer]:
+              - checkbox "H. Pylori (qualitative)" [ref=e225]
+              - generic [ref=e226]: H. Pylori
+              - generic [ref=e227]: (qualitative)
+            - generic [ref=e229] [cursor=pointer]:
+              - checkbox "VDRL (qualitative)" [ref=e230]
+              - generic [ref=e231]: VDRL
+              - generic [ref=e232]: (qualitative)
+            - generic [ref=e234] [cursor=pointer]:
+              - checkbox "CRP (C-Reactive Protein) (qualitative)" [ref=e235]
+              - generic [ref=e236]: CRP (C-Reactive Protein)
+              - generic [ref=e237]: (qualitative)
+            - generic [ref=e239] [cursor=pointer]:
+              - checkbox "RA Factor (qualitative)" [ref=e240]
+              - generic [ref=e241]: RA Factor
+              - generic [ref=e242]: (qualitative)
+            - generic [ref=e244] [cursor=pointer]:
+              - checkbox "ASO (Anti-Streptolysin O) (qualitative)" [ref=e245]
+              - generic [ref=e246]: ASO (Anti-Streptolysin O)
+              - generic [ref=e247]: (qualitative)
+            - generic [ref=e249] [cursor=pointer]:
+              - checkbox "ANA (qualitative)" [ref=e250]
+              - generic [ref=e251]: ANA
+              - generic [ref=e252]: (qualitative)
+            - generic [ref=e254] [cursor=pointer]:
+              - checkbox "Typhoid (ICT) (qualitative)" [ref=e255]
+              - generic [ref=e256]: Typhoid (ICT)
+              - generic [ref=e257]: (qualitative)
+            - generic [ref=e259] [cursor=pointer]:
+              - checkbox "HCG (Pregnancy Test) (qualitative)" [ref=e260]
+              - generic [ref=e261]: HCG (Pregnancy Test)
+              - generic [ref=e262]: (qualitative)
+            - generic [ref=e264] [cursor=pointer]:
+              - checkbox "Beta-HCG (standard)" [ref=e265]
+              - generic [ref=e266]: Beta-HCG
+              - generic [ref=e267]: (standard)
+        - button "STOOL ANALYSIS ▼" [ref=e78]:
+          - generic [ref=e79]: STOOL ANALYSIS
+          - generic [ref=e80]: ▼
+        - generic [ref=e81]:
+          - button "URINE ANALYSIS ▲" [ref=e280]:
+            - generic [ref=e83]: URINE ANALYSIS
+            - generic [ref=e84]: ▲
+          - generic [ref=e282]:
+            - generic [ref=e283] [cursor=pointer]:
+              - checkbox "Urine R/E (Urine Analysis) (descriptive)" [checked] [ref=e284]
+              - generic [ref=e285]: Urine R/E (Urine Analysis)
+              - generic [ref=e286]: (descriptive)
+            - generic [ref=e288]:
+              - generic [ref=e289]:
+                - generic [ref=e290]: PHYSICAL EXAMINATION
+                - table [ref=e291]:
+                  - rowgroup [ref=e292]:
+                    - row "Color -- Select --" [ref=e293]:
+                      - cell "Color" [ref=e294]
+                      - cell "-- Select --" [ref=e295]:
+                        - combobox [ref=e296]:
+                          - option "-- Select --" [selected]
+                          - option "Light Yellow"
+                          - option "Yellow"
+                          - option "Dark Yellow"
+                          - option "Amber"
+                          - option "Red"
+                          - option "Brown"
+                          - option "Colorless"
+                          - option "Pale Yellow"
+                    - row "Turbidity -- Select --" [ref=e297]:
+                      - cell "Turbidity" [ref=e298]
+                      - cell "-- Select --" [ref=e299]:
+                        - combobox [ref=e300]:
+                          - option "-- Select --" [selected]
+                          - option "Nil"
+                          - option "Slight"
+                          - option "Turbid"
+                          - option "Clear"
+                    - row "Sp. Gravity 1.025" [ref=e301]:
+                      - cell "Sp. Gravity" [ref=e302]
+                      - cell "1.025" [ref=e303]:
+                        - textbox [ref=e305]: "1.025"
+                    - row "Deposit -- Select --" [ref=e306]:
+                      - cell "Deposit" [ref=e307]
+                      - cell "-- Select --" [ref=e308]:
+                        - combobox [ref=e309]:
+                          - option "-- Select --" [selected]
+                          - option "Nil"
+                          - option "Present"
+              - generic [ref=e310]:
+                - generic [ref=e311]: CHEMICAL EXAMINATION
+                - table [ref=e312]:
+                  - rowgroup [ref=e313]:
+                    - row "pH -- Select --" [ref=e314]:
+                      - cell "pH" [ref=e315]
+                      - cell "-- Select --" [ref=e316]:
+                        - combobox [ref=e317]:
+                          - option "-- Select --" [selected]
+                          - option "Acidic"
+                          - option "Neutral"
+                          - option "Alkaline"
+                    - row "Sugar -- Select --" [ref=e318]:
+                      - cell "Sugar" [ref=e319]
+                      - cell "-- Select --" [ref=e320]:
+                        - combobox [ref=e321]:
+                          - option "-- Select --" [selected]
+                          - option "Nil"
+                          - option "Trace"
+                          - option "+"
+                          - option "++"
+                          - option "+++"
+                    - row "Protein -- Select --" [ref=e322]:
+                      - cell "Protein" [ref=e323]
+                      - cell "-- Select --" [ref=e324]:
+                        - combobox [ref=e325]:
+                          - option "-- Select --" [selected]
+                          - option "Nil"
+                          - option "Trace"
+                          - option "+"
+                          - option "++"
+                          - option "+++"
+                    - row "Ketone -- Select --" [ref=e326]:
+                      - cell "Ketone" [ref=e327]
+                      - cell "-- Select --" [ref=e328]:
+                        - combobox [ref=e329]:
+                          - option "-- Select --" [selected]
+                          - option "Nil"
+                          - option "Present"
+                    - row "Urobilinogen -- Select --" [ref=e330]:
+                      - cell "Urobilinogen" [ref=e331]
+                      - cell "-- Select --" [ref=e332]:
+                        - combobox [ref=e333]:
+                          - option "-- Select --" [selected]
+                          - option "Normal"
+                          - option "Increased"
+                    - row "Bilirubin -- Select --" [ref=e334]:
+                      - cell "Bilirubin" [ref=e335]
+                      - cell "-- Select --" [ref=e336]:
+                        - combobox [ref=e337]:
+                          - option "-- Select --" [selected]
+                          - option "Nil"
+                          - option "Present"
+                    - row "Blood -- Select --" [ref=e338]:
+                      - cell "Blood" [ref=e339]
+                      - cell "-- Select --" [ref=e340]:
+                        - combobox [ref=e341]:
+                          - option "-- Select --" [selected]
+                          - option "Nil"
+                          - option "Present"
+              - generic [ref=e342]:
+                - generic [ref=e343]: MICROSCOPIC EXAMINATION
+                - table [ref=e344]:
+                  - rowgroup [ref=e345]:
+                    - row "Pus Cells Nil /HPF" [ref=e346]:
+                      - cell "Pus Cells" [ref=e347]
+                      - cell "Nil /HPF" [ref=e348]:
+                        - generic [ref=e349]:
+                          - textbox [ref=e350]: Nil
+                          - generic [ref=e351]: /HPF
+                    - row "Red Blood Cells Nil /HPF" [ref=e352]:
+                      - cell "Red Blood Cells" [ref=e353]
+                      - cell "Nil /HPF" [ref=e354]:
+                        - generic [ref=e355]:
+                          - textbox [ref=e356]: Nil
+                          - generic [ref=e357]: /HPF
+                    - row "Epithelial Cells Nil /HPF" [ref=e358]:
+                      - cell "Epithelial Cells" [ref=e359]
+                      - cell "Nil /HPF" [ref=e360]:
+                        - generic [ref=e361]:
+                          - textbox [ref=e362]: Nil
+                          - generic [ref=e363]: /HPF
+                    - row "Crystals Nil /HPF" [ref=e364]:
+                      - cell "Crystals" [ref=e365]
+                      - cell "Nil /HPF" [ref=e366]:
+                        - generic [ref=e367]:
+                          - textbox [ref=e368]: Nil
+                          - generic [ref=e369]: /HPF
+                    - row "Normal Casts Nil /LPF" [ref=e370]:
+                      - cell "Normal Casts" [ref=e371]
+                      - cell "Nil /LPF" [ref=e372]:
+                        - generic [ref=e373]:
+                          - textbox [ref=e374]: Nil
+                          - generic [ref=e375]: /LPF
+                    - row "Amorphous Nil /HPF" [ref=e376]:
+                      - cell "Amorphous" [ref=e377]
+                      - cell "Nil /HPF" [ref=e378]:
+                        - generic [ref=e379]:
+                          - textbox [ref=e380]: Nil
+                          - generic [ref=e381]: /HPF
+                    - row "Organisms -- Select --" [ref=e382]:
+                      - cell "Organisms" [ref=e383]
+                      - cell "-- Select --" [ref=e384]:
+                        - combobox [ref=e385]:
+                          - option "-- Select --" [selected]
+                          - option "Nil"
+                          - option "Present"
+      - generic [ref=e85]:
+        - button "Save as Draft" [ref=e86]
+        - button "Finalize Report" [ref=e87]
