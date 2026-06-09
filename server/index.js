@@ -14,13 +14,13 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.use('/api/patients', require('./routes/patients'));
-app.use('/api/doctors',  require('./routes/doctors'));
+app.use('/api/patients',  require('./routes/patients'));
+app.use('/api/doctors',   require('./routes/doctors'));
+app.use('/api/templates', require('./routes/templates'));
+app.use('/api/settings',  require('./routes/settings'));
 
 // TODO: mount as phases are completed
-// app.use('/api/templates', require('./routes/templates'));
 // app.use('/api/reports',   require('./routes/reports'));
-// app.use('/api/settings',  require('./routes/settings'));
 // app.use('/api/dashboard', require('./routes/dashboard'));
 
 app.listen(PORT, () => {
