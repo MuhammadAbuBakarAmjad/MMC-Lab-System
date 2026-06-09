@@ -92,7 +92,7 @@ To restore from backup:
 
 ### Server Setup Requirements
 - Node.js 20+
-- PostgreSQL 15+
+- PostgreSQL 18+
 - No Docker required — keep it simple for a non-technical client
 
 ### Project Structure

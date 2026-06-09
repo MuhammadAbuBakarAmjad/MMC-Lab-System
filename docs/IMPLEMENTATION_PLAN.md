@@ -548,7 +548,7 @@ EditReport Page (client/src/pages/EditReport.jsx):
 **2. README.md**
 
 Must cover:
-1. Prerequisites: Node.js 20+, PostgreSQL 15+
+1. Prerequisites: Node.js 20+, PostgreSQL 18+
 2. Installation:
    - Clone repo
    - `cd server && npm install`
