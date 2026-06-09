@@ -1,0 +1,603 @@
+[
+  {
+    "test_name": "CBC (Complete Blood Count)",
+    "category": "HAEMATOLOGY",
+    "report_type": "standard",
+    "display_order": 1,
+    "template_data": {
+      "fields": [
+        { "name": "T.L.C.",       "unit": "x10*3/cmm", "normal_male": "4.0 - 11.0",  "normal_female": "4.0 - 11.0"  },
+        { "name": "Haemoglobin",  "unit": "g/dl",      "normal_male": "13.0 - 17.5", "normal_female": "11.5 - 14.5" },
+        { "name": "RBC",          "unit": "x10*12/l",  "normal_male": "4.2 - 6.0",   "normal_female": "4.2 - 6.0"   },
+        { "name": "HCT",          "unit": "%",          "normal_male": "38.7 - 50.7", "normal_female": "38.7 - 50.7" },
+        { "name": "MCH",          "unit": "pg",         "normal_male": "25.1 - 31.6", "normal_female": "25.1 - 31.6" },
+        { "name": "MCHC",         "unit": "g/dl",      "normal_male": "30 - 36",      "normal_female": "30 - 36"      },
+        { "name": "Platelets",    "unit": "x10*3/cmm", "normal_male": "150 - 450",   "normal_female": "150 - 450"   },
+        { "name": "DLC - Neutrophils",  "unit": "%",   "normal_male": "35.0 - 76.0", "normal_female": "35.0 - 76.0" },
+        { "name": "DLC - Lymphocytes",  "unit": "%",   "normal_male": "18.0 - 45.0", "normal_female": "18.0 - 45.0" },
+        { "name": "DLC - Monocytes",    "unit": "%",   "normal_male": "4.0 - 10.0",  "normal_female": "4.0 - 10.0"  },
+        { "name": "DLC - Eosinophils",  "unit": "%",   "normal_male": "1.0 - 6.0",   "normal_female": "1.0 - 6.0"   }
+      ]
+    }
+  },
+  {
+    "test_name": "ESR",
+    "category": "HAEMATOLOGY",
+    "report_type": "standard",
+    "display_order": 2,
+    "template_data": {
+      "fields": [
+        { "name": "E.S.R.", "unit": "mm/1st Hour", "normal_male": "0 - 10", "normal_female": "0 - 15" }
+      ]
+    }
+  },
+  {
+    "test_name": "Haemoglobin (HB)",
+    "category": "HAEMATOLOGY",
+    "report_type": "standard",
+    "display_order": 3,
+    "template_data": {
+      "fields": [
+        { "name": "Haemoglobin", "unit": "g/dl", "normal_male": "13.0 - 17.5", "normal_female": "11.5 - 14.5" }
+      ]
+    }
+  },
+  {
+    "test_name": "Blood Group",
+    "category": "HAEMATOLOGY",
+    "report_type": "qualitative",
+    "display_order": 4,
+    "template_data": {
+      "fields": [
+        { "name": "Blood Group", "options": ["A Positive", "A Negative", "B Positive", "B Negative", "O Positive", "O Negative", "AB Positive", "AB Negative"] },
+        { "name": "Rh Factor",   "options": ["Positive", "Negative"] }
+      ]
+    }
+  },
+  {
+    "test_name": "Malarial Parasite (MP)",
+    "category": "HAEMATOLOGY",
+    "report_type": "qualitative",
+    "display_order": 5,
+    "template_data": {
+      "fields": [
+        { "name": "Malarial Parasite", "options": ["Not Seen", "P. Vivax Seen", "P. Falciparum Seen"] }
+      ]
+    }
+  },
+  {
+    "test_name": "Fasting Blood Sugar (FBS)",
+    "category": "BLOOD GLUCOSE",
+    "report_type": "standard",
+    "display_order": 10,
+    "template_data": {
+      "fields": [
+        { "name": "Fasting Blood Sugar", "unit": "mg/dl", "normal_male": "70 - 110", "normal_female": "70 - 110" }
+      ]
+    }
+  },
+  {
+    "test_name": "Random Blood Sugar (RBS)",
+    "category": "BLOOD GLUCOSE",
+    "report_type": "standard",
+    "display_order": 11,
+    "template_data": {
+      "fields": [
+        { "name": "Random Blood Sugar", "unit": "mg/dl", "normal_male": "90 - 150", "normal_female": "90 - 150" }
+      ]
+    }
+  },
+  {
+    "test_name": "HbA1c",
+    "category": "BLOOD GLUCOSE",
+    "report_type": "standard",
+    "display_order": 12,
+    "template_data": {
+      "fields": [
+        { "name": "HbA1c", "unit": "%", "normal_male": "4.0 - 6.0", "normal_female": "4.0 - 6.0" }
+      ]
+    }
+  },
+  {
+    "test_name": "LFT (Liver Function Tests)",
+    "category": "LIVER FUNCTION TESTS",
+    "report_type": "standard",
+    "display_order": 20,
+    "template_data": {
+      "fields": [
+        { "name": "Bilirubin Total",   "unit": "mg/dl", "normal_male": "Upto 1.0",   "normal_female": "Upto 1.0"   },
+        { "name": "ALT (S.G.P.T)",    "unit": "U/l",   "normal_male": "10 - 41",    "normal_female": "10 - 37"    },
+        { "name": "AST (S.G.O.T)",    "unit": "U/l",   "normal_male": "10 - 38",    "normal_female": "10 - 31"    },
+        { "name": "Alk. Phosphatase", "unit": "U/l",   "normal_male": "65 - 306",   "normal_female": "65 - 306"   }
+      ]
+    }
+  },
+  {
+    "test_name": "RPM (Renal Function Tests)",
+    "category": "RENAL FUNCTION TESTS",
+    "report_type": "standard",
+    "display_order": 30,
+    "template_data": {
+      "fields": [
+        { "name": "Blood Urea",        "unit": "mg/dl", "normal_male": "20 - 45",  "normal_female": "20 - 45"  },
+        { "name": "Serum Creatinine",  "unit": "mg/dl", "normal_male": "0.6 - 1.5","normal_female": "0.6 - 1.1"}
+      ]
+    }
+  },
+  {
+    "test_name": "HB + RPM",
+    "category": "HAEMATOLOGY",
+    "report_type": "standard",
+    "display_order": 6,
+    "template_data": {
+      "fields": [
+        { "name": "Haemoglobin",      "unit": "g/dl",  "normal_male": "13.0 - 17.5","normal_female": "11.5 - 14.5"},
+        { "name": "Blood Urea",       "unit": "mg/dl", "normal_male": "20 - 45",    "normal_female": "20 - 45"   },
+        { "name": "Serum Creatinine", "unit": "mg/dl", "normal_male": "0.6 - 1.5",  "normal_female": "0.6 - 1.1" }
+      ]
+    }
+  },
+  {
+    "test_name": "Electrolytes",
+    "category": "RENAL FUNCTION TESTS",
+    "report_type": "standard",
+    "display_order": 31,
+    "template_data": {
+      "fields": [
+        { "name": "Sodium (Na)",    "unit": "mEq/L", "normal_male": "136 - 145", "normal_female": "136 - 145" },
+        { "name": "Potassium (K)",  "unit": "mEq/L", "normal_male": "3.5 - 5.6", "normal_female": "3.5 - 5.6" },
+        { "name": "Chloride (Cl)",  "unit": "mEq/L", "normal_male": "98 - 107",  "normal_female": "98 - 107"  }
+      ]
+    }
+  },
+  {
+    "test_name": "Lipid Profile",
+    "category": "BIOCHEMISTRY",
+    "report_type": "standard",
+    "display_order": 40,
+    "template_data": {
+      "fields": [
+        { "name": "Triglycerides",       "unit": "mg/dl", "normal_male": "50 - 150",     "normal_female": "50 - 150"     },
+        { "name": "Cholesterol",         "unit": "mg/dl", "normal_male": "150 - 200",    "normal_female": "150 - 200"    },
+        { "name": "H.D.L. Cholesterol",  "unit": "mg/dl", "normal_male": "More than 35", "normal_female": "More than 35" },
+        { "name": "L.D.L. Cholesterol",  "unit": "mg/dl", "normal_male": "Upto 150",     "normal_female": "Upto 150"     },
+        { "name": "V.L.D.L.",            "unit": "mg/dl", "normal_male": "Upto 25",      "normal_female": "Upto 25"      }
+      ]
+    }
+  },
+  {
+    "test_name": "Serum Uric Acid",
+    "category": "BIOCHEMISTRY",
+    "report_type": "standard",
+    "display_order": 41,
+    "template_data": {
+      "fields": [
+        { "name": "Serum Uric Acid", "unit": "mg/dl", "normal_male": "3.4 - 7.0", "normal_female": "2.4 - 5.7" }
+      ]
+    }
+  },
+  {
+    "test_name": "Albumin",
+    "category": "BIOCHEMISTRY",
+    "report_type": "standard",
+    "display_order": 42,
+    "template_data": {
+      "fields": [
+        { "name": "Albumin", "unit": "g/dl", "normal_male": "3.5 - 5.0", "normal_female": "3.5 - 5.0" }
+      ]
+    }
+  },
+  {
+    "test_name": "Calcium",
+    "category": "BIOCHEMISTRY",
+    "report_type": "standard",
+    "display_order": 43,
+    "template_data": {
+      "fields": [
+        { "name": "Calcium", "unit": "mg/dl", "normal_male": "8.5 - 10.5", "normal_female": "8.5 - 10.5" }
+      ]
+    }
+  },
+  {
+    "test_name": "Total Protein",
+    "category": "BIOCHEMISTRY",
+    "report_type": "standard",
+    "display_order": 44,
+    "template_data": {
+      "fields": [
+        { "name": "Total Protein", "unit": "g/dl", "normal_male": "6.0 - 8.3", "normal_female": "6.0 - 8.3" }
+      ]
+    }
+  },
+  {
+    "test_name": "Serology Panel (HBsAg, Anti-HCV)",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 50,
+    "template_data": {
+      "fields": [
+        { "name": "HBsAg (Screening)",     "options": ["Reactive", "Non-Reactive"] },
+        { "name": "Anti-HCV (Screening)",  "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "HBsAg",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 51,
+    "template_data": {
+      "fields": [
+        { "name": "HBsAg (Screening)", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "Anti-HCV",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 52,
+    "template_data": {
+      "fields": [
+        { "name": "Anti-HCV (Screening)", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "Anti-HIV",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 53,
+    "template_data": {
+      "fields": [
+        { "name": "Anti-HIV (Screening)", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "H. Pylori",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 54,
+    "template_data": {
+      "fields": [
+        { "name": "H. Pylori (Screening)", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "VDRL",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 55,
+    "template_data": {
+      "fields": [
+        { "name": "V.D.R.L. (Screening)", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "CRP (C-Reactive Protein)",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 56,
+    "template_data": {
+      "fields": [
+        { "name": "CRP", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "RA Factor",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 57,
+    "template_data": {
+      "fields": [
+        { "name": "RA Factor", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "ASO (Anti-Streptolysin O)",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 58,
+    "template_data": {
+      "fields": [
+        { "name": "ASO Titre", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "ANA",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 59,
+    "template_data": {
+      "fields": [
+        { "name": "ANA (Anti-Nuclear Antibody)", "options": ["Reactive", "Non-Reactive"] }
+      ]
+    }
+  },
+  {
+    "test_name": "Typhoid (ICT)",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 60,
+    "template_data": {
+      "fields": [
+        { "name": "Typhoid (ICT)", "options": ["Positive", "Negative"] }
+      ]
+    }
+  },
+  {
+    "test_name": "HCG (Pregnancy Test)",
+    "category": "SEROLOGY",
+    "report_type": "qualitative",
+    "display_order": 61,
+    "template_data": {
+      "fields": [
+        { "name": "HCG (Pregnancy Test)", "options": ["Positive", "Negative"] }
+      ]
+    }
+  },
+  {
+    "test_name": "Beta-HCG",
+    "category": "SEROLOGY",
+    "report_type": "standard",
+    "display_order": 62,
+    "template_data": {
+      "fields": [
+        { "name": "Beta-HCG", "unit": "mIU/ml", "normal_male": "< 5.0", "normal_female": "< 5.0 (non-pregnant)" }
+      ]
+    }
+  },
+  {
+    "test_name": "PT-APTT",
+    "category": "HAEMATOLOGY",
+    "report_type": "standard",
+    "display_order": 7,
+    "template_data": {
+      "fields": [
+        { "name": "Prothrombin Time (PT)",  "unit": "seconds", "normal_male": "11 - 14",  "normal_female": "11 - 14"  },
+        { "name": "Control",                "unit": "seconds", "normal_male": "11 - 14",  "normal_female": "11 - 14"  },
+        { "name": "INR",                    "unit": "",        "normal_male": "0.9 - 1.1", "normal_female": "0.9 - 1.1"},
+        { "name": "APTT",                   "unit": "seconds", "normal_male": "25 - 35",  "normal_female": "25 - 35"  },
+        { "name": "APTT Control",           "unit": "seconds", "normal_male": "25 - 35",  "normal_female": "25 - 35"  }
+      ]
+    }
+  },
+  {
+    "test_name": "Urine R/E (Urine Analysis)",
+    "category": "URINE ANALYSIS",
+    "report_type": "descriptive",
+    "display_order": 70,
+    "template_data": {
+      "sections": [
+        {
+          "heading": "PHYSICAL EXAMINATION",
+          "fields": [
+            { "name": "Color",       "type": "dropdown", "options": ["Light Yellow", "Yellow", "Dark Yellow", "Amber", "Red", "Brown", "Colorless", "Pale Yellow"] },
+            { "name": "Turbidity",   "type": "dropdown", "options": ["Nil", "Slight", "Turbid", "Clear"] },
+            { "name": "Sp. Gravity", "type": "text",     "default": "1.025" },
+            { "name": "Deposit",     "type": "dropdown", "options": ["Nil", "Present"] }
+          ]
+        },
+        {
+          "heading": "CHEMICAL EXAMINATION",
+          "fields": [
+            { "name": "pH",           "type": "dropdown", "options": ["Acidic", "Neutral", "Alkaline"] },
+            { "name": "Sugar",        "type": "dropdown", "options": ["Nil", "Trace", "+", "++", "+++"] },
+            { "name": "Protein",      "type": "dropdown", "options": ["Nil", "Trace", "+", "++", "+++"] },
+            { "name": "Ketone",       "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Urobilinogen", "type": "dropdown", "options": ["Normal", "Increased"] },
+            { "name": "Bilirubin",    "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Blood",        "type": "dropdown", "options": ["Nil", "Present"] }
+          ]
+        },
+        {
+          "heading": "MICROSCOPIC EXAMINATION",
+          "fields": [
+            { "name": "Pus Cells",        "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Red Blood Cells",  "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Epithelial Cells", "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Crystals",         "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Normal Casts",     "type": "text", "unit": "/LPF", "default": "Nil" },
+            { "name": "Amorphous",        "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Organisms",        "type": "dropdown", "options": ["Nil", "Present"] }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "test_name": "Stool Analysis",
+    "category": "STOOL ANALYSIS",
+    "report_type": "descriptive",
+    "display_order": 80,
+    "template_data": {
+      "sections": [
+        {
+          "heading": "PHYSICAL EXAMINATION",
+          "fields": [
+            { "name": "Appearance",  "type": "dropdown", "options": ["Light Brown", "Brown", "Dark Brown", "Yellow", "Green", "Black", "Red"] },
+            { "name": "Consistency", "type": "dropdown", "options": ["Semiformed", "Formed", "Soft", "Loose", "Watery"] },
+            { "name": "Odour",       "type": "dropdown", "options": ["Foul", "Normal"] },
+            { "name": "Mucous",      "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Blood",       "type": "dropdown", "options": ["Nil", "Present"] }
+          ]
+        },
+        {
+          "heading": "MICROSCOPIC EXAMINATION",
+          "fields": [
+            { "name": "Pus Cells",        "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Red Blood Cells",  "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Bacteria",         "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Ova",              "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Cysts",            "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Vegetative Form",  "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Mucous",           "type": "dropdown", "options": ["Nil", "Present"] }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "test_name": "Semen Analysis",
+    "category": "SEMEN ANALYSIS",
+    "report_type": "descriptive",
+    "display_order": 90,
+    "template_data": {
+      "sections": [
+        {
+          "heading": "PHYSICAL EXAMINATION",
+          "fields": [
+            { "name": "Specimen",          "type": "dropdown", "options": ["Post Masturbation", "Post Coitus"], "default": "Post Masturbation" },
+            { "name": "Volume",            "type": "text", "unit": "ml",      "normal": "1 - 5" },
+            { "name": "Colour",            "type": "dropdown", "options": ["Off White", "White", "Yellow"] },
+            { "name": "pH",                "type": "dropdown", "options": ["Alkaline", "Neutral", "Acidic"] },
+            { "name": "Viscosity",         "type": "dropdown", "options": ["Normal", "Increased", "Decreased"] },
+            { "name": "Liquefaction Time", "type": "text", "unit": "minutes", "normal": "< 30" }
+          ]
+        },
+        {
+          "heading": "MICROSCOPIC EXAMINATION",
+          "fields": [
+            { "name": "Agglutination",    "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Total Sperm Count","type": "text", "unit": "millions/ml", "normal": "> 60" }
+          ]
+        },
+        {
+          "heading": "SPERM MOTILITY",
+          "fields": [
+            { "name": "Rapid Progressive", "type": "text", "unit": "%", "normal": "> 50" },
+            { "name": "Slow Progressive",  "type": "text", "unit": "%", "normal": "> 25" },
+            { "name": "Non Progressive",   "type": "text", "unit": "%", "normal": ""     }
+          ]
+        },
+        {
+          "heading": "MORPHOLOGY",
+          "fields": [
+            { "name": "Normal",   "type": "text", "unit": "%", "normal": "> 80" },
+            { "name": "Abnormal", "type": "text", "unit": "%", "normal": "< 20" }
+          ]
+        },
+        {
+          "heading": "OTHER CELLS",
+          "fields": [
+            { "name": "Pus Cells",        "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Epithelial Cells", "type": "text", "unit": "/HPF", "default": "Nil" },
+            { "name": "Red Blood Cells",  "type": "text", "unit": "/HPF", "default": "Nil" }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "test_name": "Fluid Examination",
+    "category": "FLUID EXAMINATION",
+    "report_type": "descriptive",
+    "display_order": 95,
+    "template_data": {
+      "sections": [
+        {
+          "heading": "PHYSICAL EXAMINATION",
+          "fields": [
+            { "name": "Nature of Fluid", "type": "text",     "default": "" },
+            { "name": "Colour",          "type": "text",     "default": "" },
+            { "name": "Turbidity",       "type": "dropdown", "options": ["Clear", "Slight", "Turbid"] },
+            { "name": "Coagulum",        "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Volume",          "type": "text",     "unit": "ml" }
+          ]
+        },
+        {
+          "heading": "CHEMICAL EXAMINATION",
+          "fields": [
+            { "name": "Sugar",   "type": "dropdown", "options": ["Nil", "Present"] },
+            { "name": "Protein", "type": "dropdown", "options": ["Nil", "Present"] }
+          ]
+        },
+        {
+          "heading": "MICROSCOPIC EXAMINATION",
+          "fields": [
+            { "name": "T.L.C.",       "type": "text", "default": "Nil" },
+            { "name": "Polymorphs",   "type": "text", "unit": "%", "default": "Nil" },
+            { "name": "Lymphocytes",  "type": "text", "unit": "%", "default": "Nil" },
+            { "name": "Red Blood Cells","type":"text","default": "Nil" }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "test_name": "Hormones (TSH, FSH, LH, Prolactin)",
+    "category": "HORMONES",
+    "report_type": "hormones",
+    "display_order": 100,
+    "template_data": {
+      "fields": [
+        { "name": "TSH",         "unit": "uUI/ml", "normal_value_text": "0.25 – 5.0" },
+        { "name": "FSH",         "unit": "mlU/ml", "normal_value_text": "M: 1.7-12.0\nF Follicular (1st half): 3.9-12.0\nF Follicular (2nd half): 2.9-9.0\nF Luteal: 1.5-7.0\nMenopause: 17.0-95.0" },
+        { "name": "LH",          "unit": "mlU/ml", "normal_value_text": "M: 1.1-7.0\nF Ovulation Peak: 9.6-80.0\nF Follicular: 1.5-8.0\nF Luteal: 0.2-6.5\nMenopause: 8.0-33.0" },
+        { "name": "S. Prolactin","unit": "ng/ml",  "normal_value_text": "Men: 3-25\nFemale: 5-35" }
+      ]
+    }
+  },
+  {
+    "test_name": "TSH",
+    "category": "HORMONES",
+    "report_type": "hormones",
+    "display_order": 101,
+    "template_data": {
+      "fields": [
+        { "name": "TSH", "unit": "uUI/ml", "normal_value_text": "0.25 – 5.0" }
+      ]
+    }
+  },
+  {
+    "test_name": "FSH",
+    "category": "HORMONES",
+    "report_type": "hormones",
+    "display_order": 102,
+    "template_data": {
+      "fields": [
+        { "name": "FSH", "unit": "mlU/ml", "normal_value_text": "M: 1.7-12.0\nF Follicular (1st half): 3.9-12.0\nF Follicular (2nd half): 2.9-9.0\nF Luteal: 1.5-7.0\nMenopause: 17.0-95.0" }
+      ]
+    }
+  },
+  {
+    "test_name": "LH",
+    "category": "HORMONES",
+    "report_type": "hormones",
+    "display_order": 103,
+    "template_data": {
+      "fields": [
+        { "name": "LH", "unit": "mlU/ml", "normal_value_text": "M: 1.1-7.0\nF Ovulation Peak: 9.6-80.0\nF Follicular: 1.5-8.0\nF Luteal: 0.2-6.5\nMenopause: 8.0-33.0" }
+      ]
+    }
+  },
+  {
+    "test_name": "Prolactin",
+    "category": "HORMONES",
+    "report_type": "hormones",
+    "display_order": 104,
+    "template_data": {
+      "fields": [
+        { "name": "S. Prolactin", "unit": "ng/ml", "normal_value_text": "Men: 3-25\nFemale: 5-35" }
+      ]
+    }
+  },
+  {
+    "test_name": "Vitamin D3 + B12",
+    "category": "BIOCHEMISTRY",
+    "report_type": "standard",
+    "display_order": 45,
+    "template_data": {
+      "fields": [
+        { "name": "Vitamin D3 (25-OH)", "unit": "ng/ml", "normal_male": "30 - 100",  "normal_female": "30 - 100"  },
+        { "name": "Vitamin B12",        "unit": "pg/ml", "normal_male": "200 - 900", "normal_female": "200 - 900" }
+      ]
+    }
+  }
+]
