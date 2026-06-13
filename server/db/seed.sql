@@ -91,7 +91,7 @@ INSERT INTO test_templates (test_name, category, report_type, display_order, tem
 INSERT INTO test_templates (test_name, category, report_type, display_order, template_data) VALUES
 ('Random Blood Sugar (RBS)', 'BLOOD GLUCOSE', 'standard', 11, '{
   "fields": [
-    {"name": "Random Blood Sugar", "unit": "mg/dl", "normal_male": "90 - 150", "normal_female": "90 - 150"}
+    {"name": "Random Blood Sugar", "unit": "mg/dl", "normal_male": "110 - 150", "normal_female": "110 - 150"}
   ]
 }');
 

@@ -6,21 +6,22 @@ import { searchPatients } from '../api/patients'
 export default function Patients() {
   const [patients, setPatients]     = useState([])
   const [searchText, setSearchText] = useState('')
+  const [searchBy, setSearchBy]     = useState('name') // 'name' | 'phone' | 'id'
   const [isLoading, setIsLoading]   = useState(true)
   const [error, setError]           = useState('')
 
   const debounceTimer = useRef(null)
 
-  // Load all patients on mount (search with empty query returns up to 10 recent)
+  // Load all patients on mount
   useEffect(() => {
-    loadPatients('')
+    loadPatients('', 'name')
   }, [])
 
-  async function loadPatients(query) {
+  async function loadPatients(query, mode) {
     setIsLoading(true)
     setError('')
     try {
-      const results = await searchPatients(query)
+      const results = await searchPatients(query, mode)
       setPatients(results)
     } catch (err) {
       console.error('Failed to load patients:', err)
@@ -36,8 +37,16 @@ export default function Patients() {
 
     clearTimeout(debounceTimer.current)
     debounceTimer.current = setTimeout(() => {
-      loadPatients(value.trim())
+      loadPatients(value.trim(), searchBy)
     }, 300)
+  }
+
+  function handleSearchByChange(event) {
+    const newMode = event.target.value
+    setSearchBy(newMode)
+    // Re-run search immediately with the new mode
+    clearTimeout(debounceTimer.current)
+    loadPatients(searchText.trim(), newMode)
   }
 
   return (
@@ -46,19 +55,34 @@ export default function Patients() {
         <h1 className="text-xl font-semibold text-gray-900">Patients</h1>
       </div>
 
-      {/* Search bar */}
+      {/* Search bar with mode selector */}
       <div className="mb-4">
         <label htmlFor="patient-search" className="block text-sm font-medium text-gray-700 mb-1">
           Search Patients
         </label>
-        <input
-          id="patient-search"
-          type="text"
-          value={searchText}
-          onChange={handleSearchInput}
-          placeholder="Search by name, phone, or ID"
-          className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <div className="flex max-w-md">
+          <select
+            value={searchBy}
+            onChange={handleSearchByChange}
+            className="px-2 py-2 text-sm border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:z-10"
+          >
+            <option value="name">Name</option>
+            <option value="phone">Phone</option>
+            <option value="id">ID</option>
+          </select>
+          <input
+            id="patient-search"
+            type="text"
+            value={searchText}
+            onChange={handleSearchInput}
+            placeholder={
+              searchBy === 'phone' ? 'Search by phone number...' :
+              searchBy === 'id'    ? 'Search by patient ID...'   :
+              'Search by patient name...'
+            }
+            className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-r-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
       </div>
 
       {error && (

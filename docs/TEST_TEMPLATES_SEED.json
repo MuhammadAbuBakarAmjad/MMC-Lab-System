@@ -83,7 +83,7 @@
     "display_order": 11,
     "template_data": {
       "fields": [
-        { "name": "Random Blood Sugar", "unit": "mg/dl", "normal_male": "90 - 150", "normal_female": "90 - 150" }
+        { "name": "Random Blood Sugar", "unit": "mg/dl", "normal_male": "110 - 150", "normal_female": "110 - 150" }
       ]
     }
   },

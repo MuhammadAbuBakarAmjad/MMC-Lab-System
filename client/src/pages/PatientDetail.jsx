@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getPatient, updatePatient, getPatientReports } from '../api/patients'
 import { formatDateForDisplay } from '../utils/dates'
+import AgeInput from '../components/AgeInput'
 
 // Patient detail page — shows patient info and their full report history
 export default function PatientDetail() {
@@ -162,13 +163,7 @@ export default function PatientDetail() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
-                <input
-                  type="text"
-                  value={editAge}
-                  onChange={(e) => setEditAge(e.target.value)}
-                  placeholder="e.g. 35 Years"
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <AgeInput value={editAge} onChange={setEditAge} size="md" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>

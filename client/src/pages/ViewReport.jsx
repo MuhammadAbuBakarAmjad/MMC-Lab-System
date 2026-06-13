@@ -226,7 +226,7 @@ function ReportFooter({ settings }) {
   return (
     <tfoot>
       <tr>
-        <td>
+        <td className="pb-[1cm]">
           <div className="mt-6 pt-3 border-t border-gray-400">
             <div className="flex justify-between items-end text-sm">
               <div className="text-gray-600 max-w-[60%] text-xs leading-relaxed">{footerNote}</div>
@@ -339,7 +339,7 @@ export default function ViewReport() {
       </div>
 
       {/* Report content — this is what gets printed */}
-      <div className="report-container bg-white p-8 shadow-sm border border-gray-200 print:shadow-none print:border-none print:p-0">
+      <div className="report-container bg-white p-8 shadow-sm border border-gray-200 print:shadow-none print:border-none print:p-[1cm]">
         {/*
           Outer table structure enables the tfoot footer-repeat-on-every-page trick.
           ReportHeader goes in tbody row 1 (NOT in thead) so it prints only on page 1.

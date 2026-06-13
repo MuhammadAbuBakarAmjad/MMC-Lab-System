@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { searchPatients, createPatient } from '../api/patients'
+import AgeInput from './AgeInput'
 
 // Reusable patient search component with inline "Add New" form.
 // Used on New Report page and anywhere a patient must be selected.
@@ -8,13 +9,14 @@ import { searchPatients, createPatient } from '../api/patients'
 //   onPatientSelect — called with patient object when user selects one
 //   onPatientClear  — called when user removes the selected patient
 export default function PatientSearch({ selectedPatient, onPatientSelect, onPatientClear }) {
-  const [searchText, setSearchText]       = useState('')
-  const [searchResults, setSearchResults] = useState([])
+  const [searchText, setSearchText]         = useState('')
+  const [searchBy, setSearchBy]             = useState('name') // 'name' | 'phone' | 'id'
+  const [searchResults, setSearchResults]   = useState([])
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [isSearching, setIsSearching]     = useState(false)
-  const [showAddForm, setShowAddForm]     = useState(false)
-  const [isSaving, setIsSaving]           = useState(false)
-  const [saveError, setSaveError]         = useState('')
+  const [isSearching, setIsSearching]       = useState(false)
+  const [showAddForm, setShowAddForm]       = useState(false)
+  const [isSaving, setIsSaving]             = useState(false)
+  const [saveError, setSaveError]           = useState('')
 
   // New patient form state
   const [newName, setNewName]     = useState('')
@@ -43,7 +45,9 @@ export default function PatientSearch({ selectedPatient, onPatientSelect, onPati
 
     clearTimeout(debounceTimer.current)
 
-    if (value.trim().length < 2) {
+    // ID searches fire on 1 character — single-digit IDs are common
+    const minLength = searchBy === 'id' ? 1 : 2;
+    if (value.trim().length < minLength) {
       setSearchResults([])
       setIsDropdownOpen(false)
       return
@@ -52,7 +56,7 @@ export default function PatientSearch({ selectedPatient, onPatientSelect, onPati
     debounceTimer.current = setTimeout(async () => {
       setIsSearching(true)
       try {
-        const results = await searchPatients(value.trim())
+        const results = await searchPatients(value.trim(), searchBy)
         setSearchResults(results)
         setIsDropdownOpen(true)
       } catch (error) {
@@ -141,20 +145,35 @@ export default function PatientSearch({ selectedPatient, onPatientSelect, onPati
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <div className="relative">
-        <input
-          type="text"
-          value={searchText}
-          onChange={handleSearchInput}
-          placeholder="Search by name, phone, or ID"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          autoComplete="off"
-        />
-        {isSearching && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
+      <div className="flex">
+        <select
+          value={searchBy}
+          onChange={(e) => setSearchBy(e.target.value)}
+          className="px-2 py-2 text-sm border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:z-10"
+        >
+          <option value="name">Name</option>
+          <option value="phone">Phone</option>
+          <option value="id">ID</option>
+        </select>
+        <div className="relative flex-1">
+          <input
+            type="text"
+            value={searchText}
+            onChange={handleSearchInput}
+            placeholder={
+              searchBy === 'phone' ? 'Search by phone number...' :
+              searchBy === 'id'    ? 'Search by patient ID...'   :
+              'Search by patient name...'
+            }
+            className="w-full px-3 py-2 border border-gray-300 rounded-r-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            autoComplete="off"
+          />
+          {isSearching && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Search results dropdown */}
@@ -218,13 +237,7 @@ export default function PatientSearch({ selectedPatient, onPatientSelect, onPati
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Age</label>
-                <input
-                  type="text"
-                  value={newAge}
-                  onChange={(e) => setNewAge(e.target.value)}
-                  placeholder="e.g. 35 Years"
-                  className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
+                <AgeInput value={newAge} onChange={setNewAge} size="sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Gender</label>

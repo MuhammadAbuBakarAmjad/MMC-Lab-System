@@ -25,9 +25,10 @@ router.get('/', async (req, res) => {
   const page      = Math.max(1, parseInt(req.query.page)  || 1);
   const limit     = Math.max(1, parseInt(req.query.limit) || 20);
   const offset    = (page - 1) * limit;
-  const search    = req.query.q     || '';
-  const fromDate  = req.query.from  || '';
-  const toDate    = req.query.to    || '';
+  const search    = req.query.q         || '';
+  const searchBy  = req.query.search_by || 'name'; // 'name' | 'phone' | 'lab_no'
+  const fromDate  = req.query.from      || '';
+  const toDate    = req.query.to        || '';
   const doctorId  = req.query.doctor_id || '';
   const status    = req.query.status    || '';
 
@@ -38,10 +39,15 @@ router.get('/', async (req, res) => {
   if (search) {
     params.push(`%${search}%`);
     const idx = params.length;
-    // Search lab_no, patient name, or patient phone
-    conditions.push(
-      `(r.lab_no ILIKE $${idx} OR p.name ILIKE $${idx} OR p.phone ILIKE $${idx})`
-    );
+    // Restrict search to the selected field — avoids cross-field noise
+    if (searchBy === 'lab_no') {
+      conditions.push(`r.lab_no ILIKE $${idx}`);
+    } else if (searchBy === 'phone') {
+      conditions.push(`p.phone ILIKE $${idx}`);
+    } else {
+      // Default: patient name
+      conditions.push(`p.name ILIKE $${idx}`);
+    }
   }
 
   if (fromDate) {
@@ -223,6 +229,9 @@ router.post('/', async (req, res) => {
   const { lab_no, patient_id, doctor_id, report_date, status, results } = req.body;
 
   // Validate required fields before touching the database
+  if (!lab_no || lab_no.toString().trim() === '') {
+    return res.status(400).json({ error: 'Lab number is required', code: 'LAB_NO_REQUIRED' });
+  }
   if (!patient_id) {
     return res.status(400).json({ error: 'Patient is required', code: 'PATIENT_REQUIRED' });
   }
@@ -281,7 +290,94 @@ router.post('/', async (req, res) => {
     await client.query('ROLLBACK');
     console.error('Failed to create report:', error);
 
+    // Unique constraint violation on lab_no
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'Lab number already exists', code: 'LAB_NO_DUPLICATE' });
+    }
+
     res.status(500).json({ error: 'Could not create report', code: 'CREATE_FAILED' });
+  } finally {
+    client.release();
+  }
+});
+
+// Update an existing draft report — replaces results atomically
+// Returns 403 if the report has already been finalized
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { lab_no, patient_id, doctor_id, report_date, status, results } = req.body;
+
+  // Validate required fields
+  if (!patient_id) {
+    return res.status(400).json({ error: 'Patient is required', code: 'PATIENT_REQUIRED' });
+  }
+  if (!results || results.length === 0) {
+    return res.status(400).json({ error: 'At least one test must be selected', code: 'RESULTS_REQUIRED' });
+  }
+
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Check the report exists and is still a draft — final reports cannot be edited
+    const existing = await client.query(
+      'SELECT id, status FROM reports WHERE id = $1',
+      [id]
+    );
+
+    if (existing.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Report not found', code: 'NOT_FOUND' });
+    }
+
+    if (existing.rows[0].status === 'final') {
+      await client.query('ROLLBACK');
+      return res.status(403).json({ error: 'Final reports cannot be edited', code: 'REPORT_FINALIZED' });
+    }
+
+    // Update the report header row
+    await client.query(
+      `UPDATE reports
+       SET lab_no = $1, patient_id = $2, doctor_id = $3, report_date = $4, status = $5
+       WHERE id = $6`,
+      [
+        lab_no.toString().trim(),
+        patient_id,
+        doctor_id || null,
+        report_date || new Date().toISOString().split('T')[0],
+        status || 'draft',
+        id,
+      ]
+    );
+
+    // Replace all results: delete the old ones and insert the new set
+    await client.query('DELETE FROM report_results WHERE report_id = $1', [id]);
+
+    for (const result of results) {
+      await client.query(
+        `INSERT INTO report_results (report_id, template_id, result_data, display_order)
+         VALUES ($1, $2, $3, $4)`,
+        [
+          id,
+          result.template_id,
+          JSON.stringify(result.result_data),
+          result.display_order || 0,
+        ]
+      );
+    }
+
+    await client.query('COMMIT');
+    res.json({ id: parseInt(id), status: status || 'draft' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Failed to update report:', error);
+
+    // Unique constraint violation on lab_no
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'Lab number already exists', code: 'LAB_NO_DUPLICATE' });
+    }
+
+    res.status(500).json({ error: 'Could not update report', code: 'UPDATE_FAILED' });
   } finally {
     client.release();
   }

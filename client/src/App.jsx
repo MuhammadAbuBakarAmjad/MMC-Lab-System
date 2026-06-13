@@ -6,6 +6,7 @@ import Layout from './components/Layout.jsx'
 const Dashboard     = lazy(() => import('./pages/Dashboard.jsx'))
 const ReportsList   = lazy(() => import('./pages/ReportsList.jsx'))
 const NewReport     = lazy(() => import('./pages/NewReport.jsx'))
+const EditReport    = lazy(() => import('./pages/EditReport.jsx'))
 const ViewReport    = lazy(() => import('./pages/ViewReport.jsx'))
 const Patients      = lazy(() => import('./pages/Patients.jsx'))
 const PatientDetail = lazy(() => import('./pages/PatientDetail.jsx'))
@@ -38,7 +39,7 @@ export default function App() {
 
         {/* Report view and edit are full-width (no sidebar on print) */}
         <Route path="/reports/:id"      element={<ViewReport />} />
-        <Route path="/reports/:id/edit" element={<NewReport />} />
+        <Route path="/reports/:id/edit" element={<EditReport />} />
       </Routes>
     </Suspense>
   )

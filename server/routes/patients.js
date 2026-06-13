@@ -3,13 +3,29 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../db');
 
-// Search patients by name, phone, or id
-// Used by PatientSearch component on the New Report page
+// Search patients — search_by controls which field to match: 'name' | 'phone' | 'id'
+// Default is 'name'. Used by PatientSearch component and the Patients list page.
 router.get('/search', async (req, res) => {
-  const query = req.query.q || '';
+  const query    = req.query.q          || '';
+  const searchBy = req.query.search_by  || 'name';
 
   if (query.trim().length === 0) {
     return res.json([]);
+  }
+
+  // Build the WHERE clause based on the selected search field
+  let whereClause;
+  let params;
+  if (searchBy === 'phone') {
+    whereClause = 'p.phone LIKE $1';
+    params      = [`%${query}%`];
+  } else if (searchBy === 'id') {
+    whereClause = 'p.id::text = $1';
+    params      = [query];
+  } else {
+    // Default: name
+    whereClause = 'p.name ILIKE $1';
+    params      = [`%${query}%`];
   }
 
   try {
@@ -23,13 +39,11 @@ router.get('/search', async (req, res) => {
          COUNT(r.id) AS report_count
        FROM patients p
        LEFT JOIN reports r ON r.patient_id = p.id
-       WHERE p.name ILIKE $1
-          OR p.phone LIKE $1
-          OR (p.id::text = $2)
+       WHERE ${whereClause}
        GROUP BY p.id
        ORDER BY p.name
        LIMIT 10`,
-      [`%${query}%`, query]
+      params
     );
     res.json(result.rows);
   } catch (error) {

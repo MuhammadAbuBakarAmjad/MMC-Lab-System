@@ -1,9 +1,10 @@
 // All fetch calls for the patients resource
 // Components import from here — never call fetch() directly in components
 
-// Search patients by name, phone, or id
-export async function searchPatients(query) {
-  const response = await fetch(`/api/patients/search?q=${encodeURIComponent(query)}`);
+// Search patients — searchBy controls the field: 'name' (default) | 'phone' | 'id'
+export async function searchPatients(query, searchBy = 'name') {
+  const params = new URLSearchParams({ q: query, search_by: searchBy });
+  const response = await fetch(`/api/patients/search?${params.toString()}`);
   if (!response.ok) throw new Error('Failed to search patients');
   return response.json();
 }

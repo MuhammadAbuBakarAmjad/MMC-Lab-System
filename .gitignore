@@ -3,3 +3,7 @@ backups/
 server/.env
 client/dist/
 .DS_Store
+.playwright-cli/
+pdfimages/
+data/
+verify-tmp/

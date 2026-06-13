@@ -10,9 +10,16 @@
 
 /* Print styles — hide chrome, show only report */
 @media print {
+  /* margin: 0 removes browser-injected date/title/URL from print header and footer */
+  @page { margin: 0; }
+
   .no-print  { display: none !important; }
   .sidebar   { display: none !important; }
-  body       { margin: 0; background: white !important; color: black !important; }
+
+  /* Force white background throughout — kills the grey layout wrapper */
+  body, html, #root, .flex, main { background: white !important; color: black !important; }
+  body { margin: 0; }
+
   .report-section { page-break-inside: avoid; }
   thead { display: table-header-group; }
   tfoot { display: table-footer-group; }

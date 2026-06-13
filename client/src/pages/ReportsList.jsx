@@ -68,6 +68,7 @@ export default function ReportsList() {
 
   // Filter state
   const [searchText, setSearchText]   = useState('');
+  const [searchBy, setSearchBy]       = useState('name'); // 'name' | 'phone' | 'lab_no'
   const [fromDate, setFromDate]       = useState('');
   const [toDate, setToDate]           = useState('');
   const [selectedDoctorId, setSelectedDoctorId] = useState('');
@@ -97,12 +98,12 @@ export default function ReportsList() {
   // Reload reports whenever any filter or page changes
   useEffect(() => {
     loadReports();
-  }, [debouncedSearch, fromDate, toDate, selectedDoctorId, selectedStatus, currentPage]);
+  }, [debouncedSearch, searchBy, fromDate, toDate, selectedDoctorId, selectedStatus, currentPage]);
 
   // Reset to page 1 whenever filters change (not pagination itself)
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedSearch, fromDate, toDate, selectedDoctorId, selectedStatus]);
+  }, [debouncedSearch, searchBy, fromDate, toDate, selectedDoctorId, selectedStatus]);
 
   async function loadDoctors() {
     try {
@@ -120,6 +121,7 @@ export default function ReportsList() {
     try {
       const data = await getReports({
         q:         debouncedSearch,
+        search_by: searchBy,
         from:      fromDate,
         to:        toDate,
         doctor_id: selectedDoctorId,
@@ -160,6 +162,7 @@ export default function ReportsList() {
 
   function handleClearFilters() {
     setSearchText('');
+    setSearchBy('name');
     setFromDate('');
     setToDate('');
     setSelectedDoctorId('');
@@ -185,19 +188,35 @@ export default function ReportsList() {
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {/* Search input */}
+          {/* Search input with mode selector */}
           <div className="col-span-2 md:col-span-2">
             <label htmlFor="search-reports" className="block text-xs font-medium text-gray-700 mb-1">
               Search
             </label>
-            <input
-              id="search-reports"
-              type="text"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              placeholder="Lab no, patient name, or phone..."
-              className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="flex">
+              {/* Mode selector — attached to the left of the input */}
+              <select
+                value={searchBy}
+                onChange={(e) => setSearchBy(e.target.value)}
+                className="px-2 py-1.5 text-sm border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:z-10"
+              >
+                <option value="name">Name</option>
+                <option value="phone">Phone</option>
+                <option value="lab_no">Lab No</option>
+              </select>
+              <input
+                id="search-reports"
+                type="text"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                placeholder={
+                  searchBy === 'phone'  ? 'Search by phone number...' :
+                  searchBy === 'lab_no' ? 'Search by lab number...'   :
+                  'Search by patient name...'
+                }
+                className="flex-1 min-w-0 px-3 py-1.5 text-sm border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
 
           {/* Doctor filter */}

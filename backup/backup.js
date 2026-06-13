@@ -4,13 +4,37 @@
 const { execSync } = require('child_process');
 const fs   = require('fs');
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../server/.env') });
 
-const BACKUP_DIR   = path.resolve(process.env.BACKUP_PATH || './backups');
-const DRIVE_PATH   = process.env.GOOGLE_DRIVE_BACKUP_PATH || '';
-const TODAY        = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-const BACKUP_FILE  = path.join(BACKUP_DIR, `backup_${TODAY}.sql`);
-const PG_DUMP_PATH = 'pg_dump'; // Ensure PostgreSQL bin is in PATH, or use full path
+// Full path to pg_dump on Windows — PostgreSQL does not add itself to PATH by default.
+// If you installed a different PostgreSQL version, update the version number in this path.
+const PG_DUMP_PATH = 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_dump';
+
+// Load .env manually so this script has no npm dependencies and can run from any directory
+function loadEnvFile() {
+  const envPath = path.join(__dirname, '../server/.env');
+  if (!fs.existsSync(envPath)) {
+    throw new Error(`Cannot find .env file at: ${envPath}`);
+  }
+  const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const equalsIndex = trimmed.indexOf('=');
+    if (equalsIndex === -1) continue;
+    const key   = trimmed.slice(0, equalsIndex).trim();
+    const value = trimmed.slice(equalsIndex + 1).trim();
+    if (key && !(key in process.env)) {
+      process.env[key] = value;
+    }
+  }
+}
+
+loadEnvFile();
+
+const BACKUP_DIR  = path.resolve(__dirname, '..', process.env.BACKUP_PATH || './backups');
+const DRIVE_PATH  = process.env.GOOGLE_DRIVE_BACKUP_PATH || '';
+const TODAY       = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+const BACKUP_FILE = path.join(BACKUP_DIR, `backup_${TODAY}.sql`);
 
 function log(message) {
   console.log(`[${new Date().toISOString()}] ${message}`);
@@ -26,26 +50,27 @@ function ensureBackupDir() {
 function runDump() {
   log(`Starting database backup → ${BACKUP_FILE}`);
 
+  // PGPASSWORD lets pg_dump authenticate without an interactive prompt
   const env = {
     ...process.env,
     PGPASSWORD: process.env.DB_PASSWORD,
   };
 
   const command = `"${PG_DUMP_PATH}" -U ${process.env.DB_USER} -h ${process.env.DB_HOST} -p ${process.env.DB_PORT} ${process.env.DB_NAME}`;
+  const output  = execSync(command, { env });
 
-  const output = execSync(command, { env });
   fs.writeFileSync(BACKUP_FILE, output);
-  log(`Backup written: ${BACKUP_FILE} (${Math.round(output.length / 1024)}KB)`);
+  log(`Backup written: ${BACKUP_FILE} (${Math.round(output.length / 1024)} KB)`);
 }
 
 function deleteOldBackups() {
-  // Keep backups for the last 30 days, delete older ones
+  // Keep backups for the last 30 days, delete anything older
   const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
   const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('backup_') && f.endsWith('.sql'));
 
   for (const file of files) {
     const filePath = path.join(BACKUP_DIR, file);
-    const stats = fs.statSync(filePath);
+    const stats    = fs.statSync(filePath);
     if (stats.mtimeMs < thirtyDaysAgo) {
       fs.unlinkSync(filePath);
       log(`Deleted old backup: ${file}`);
@@ -67,7 +92,7 @@ function copyToGoogleDrive() {
   log(`Copied to Google Drive: ${destination}`);
 }
 
-async function runBackup() {
+function runBackup() {
   try {
     ensureBackupDir();
     runDump();
