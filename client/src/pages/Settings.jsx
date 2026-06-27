@@ -25,6 +25,7 @@ function LabInfoSection() {
   const [labName,    setLabName]    = useState('')
   const [address,    setAddress]    = useState('')
   const [department, setDepartment] = useState('')
+  const [contactNo,  setContactNo]  = useState('')
   const [footerNote, setFooterNote] = useState('')
   const [isLoading,  setIsLoading]  = useState(true)
   const [isSaving,   setIsSaving]   = useState(false)
@@ -43,6 +44,7 @@ function LabInfoSection() {
       setLabName(data.lab_name    || '')
       setAddress(data.address     || '')
       setDepartment(data.department  || '')
+      setContactNo(data.contact_no  || '')
       setFooterNote(data.footer_note || '')
     } catch (error) {
       console.error('Failed to load settings:', error)
@@ -59,7 +61,7 @@ function LabInfoSection() {
     setSuccessMsg('')
 
     try {
-      await updateSettings({ lab_name: labName, address, department, footer_note: footerNote })
+      await updateSettings({ lab_name: labName, address, department, contact_no: contactNo, footer_note: footerNote })
       setSuccessMsg('Lab information saved successfully.')
     } catch (error) {
       console.error('Failed to save settings:', error)
@@ -122,6 +124,20 @@ function LabInfoSection() {
             type="text"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="contactNo" className="block text-sm font-medium text-gray-700 mb-1">
+            Contact No
+          </label>
+          <input
+            id="contactNo"
+            type="text"
+            value={contactNo}
+            onChange={(e) => setContactNo(e.target.value)}
+            placeholder="e.g. +92-61-1234567"
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
           />
         </div>

@@ -20,13 +20,13 @@ router.get('/next-lab-no', async (req, res) => {
 });
 
 // Paginated list of reports with optional filters
-// Query params: page, limit, q (search), from, to, doctor_id, status
+// Query params: page, limit, q (search), search_by, from, to, doctor_id, status
 router.get('/', async (req, res) => {
   const page      = Math.max(1, parseInt(req.query.page)  || 1);
   const limit     = Math.max(1, parseInt(req.query.limit) || 20);
   const offset    = (page - 1) * limit;
   const search    = req.query.q         || '';
-  const searchBy  = req.query.search_by || 'name'; // 'name' | 'phone' | 'lab_no'
+  const searchBy  = req.query.search_by || 'name'; // 'name' | 'phone' | 'lab_no' | 'cnic' | 'father'
   const fromDate  = req.query.from      || '';
   const toDate    = req.query.to        || '';
   const doctorId  = req.query.doctor_id || '';
@@ -44,6 +44,10 @@ router.get('/', async (req, res) => {
       conditions.push(`r.lab_no ILIKE $${idx}`);
     } else if (searchBy === 'phone') {
       conditions.push(`p.phone ILIKE $${idx}`);
+    } else if (searchBy === 'cnic') {
+      conditions.push(`p.cnic ILIKE $${idx}`);
+    } else if (searchBy === 'father') {
+      conditions.push(`p.father_husband_name ILIKE $${idx}`);
     } else {
       // Default: patient name
       conditions.push(`p.name ILIKE $${idx}`);
@@ -93,6 +97,7 @@ router.get('/', async (req, res) => {
          r.lab_no,
          r.report_date,
          r.status,
+         r.specimen,
          r.created_at,
          p.id   AS patient_id,
          p.name AS patient_name,
@@ -136,12 +141,16 @@ router.get('/:id', async (req, res) => {
          r.lab_no,
          r.report_date,
          r.status,
+         r.specimen,
+         r.finalized_at,
          r.created_at,
-         p.id     AS patient_id,
-         p.name   AS patient_name,
-         p.age    AS patient_age,
-         p.gender AS patient_gender,
-         p.phone  AS patient_phone,
+         p.id                  AS patient_id,
+         p.name                AS patient_name,
+         p.age                 AS patient_age,
+         p.gender              AS patient_gender,
+         p.phone               AS patient_phone,
+         p.father_husband_name AS patient_father_husband_name,
+         p.cnic                AS patient_cnic,
          d.id     AS doctor_id,
          d.name   AS doctor_name
        FROM reports r
@@ -176,17 +185,21 @@ router.get('/:id', async (req, res) => {
 
     // Shape the response to match the spec
     const report = {
-      id:          row.id,
-      lab_no:      row.lab_no,
-      report_date: row.report_date,
-      status:      row.status,
-      created_at:  row.created_at,
+      id:           row.id,
+      lab_no:       row.lab_no,
+      report_date:  row.report_date,
+      status:       row.status,
+      specimen:     row.specimen,
+      finalized_at: row.finalized_at,
+      created_at:   row.created_at,
       patient: {
-        id:     row.patient_id,
-        name:   row.patient_name,
-        age:    row.patient_age,
-        gender: row.patient_gender,
-        phone:  row.patient_phone,
+        id:                  row.patient_id,
+        name:                row.patient_name,
+        age:                 row.patient_age,
+        gender:              row.patient_gender,
+        phone:               row.patient_phone,
+        father_husband_name: row.patient_father_husband_name,
+        cnic:                row.patient_cnic,
       },
       doctor: {
         id:   row.doctor_id,
@@ -224,9 +237,9 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Create a new report with all its test results in a single transaction
-// Body: { lab_no, patient_id, doctor_id, report_date, status, results: [...] }
+// Body: { lab_no, patient_id, doctor_id, report_date, status, specimen, results: [...] }
 router.post('/', async (req, res) => {
-  const { lab_no, patient_id, doctor_id, report_date, status, results } = req.body;
+  const { lab_no, patient_id, doctor_id, report_date, status, specimen, results } = req.body;
 
   // Validate required fields before touching the database
   if (!lab_no || lab_no.toString().trim() === '') {
@@ -250,6 +263,10 @@ router.post('/', async (req, res) => {
     return res.status(500).json({ error: 'Could not validate patient', code: 'VALIDATION_FAILED' });
   }
 
+  // Set finalized_at to now when the report is being created as final
+  const isFinal      = (status === 'final');
+  const finalizedAt  = isFinal ? new Date() : null;
+
   // Use a transaction so report + all results are inserted atomically
   // If any result insert fails, the whole report is rolled back
   const client = await db.connect();
@@ -257,15 +274,17 @@ router.post('/', async (req, res) => {
     await client.query('BEGIN');
 
     const reportResult = await client.query(
-      `INSERT INTO reports (lab_no, patient_id, doctor_id, report_date, status)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, lab_no, patient_id, doctor_id, report_date, status, created_at`,
+      `INSERT INTO reports (lab_no, patient_id, doctor_id, report_date, status, specimen, finalized_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING id, lab_no, patient_id, doctor_id, report_date, status, specimen, finalized_at, created_at`,
       [
         lab_no.toString().trim(),
         patient_id,
-        doctor_id || null,
-        report_date || new Date().toISOString().split('T')[0],
-        status || 'draft',
+        doctor_id    || null,
+        report_date  || new Date().toISOString().split('T')[0],
+        status       || 'draft',
+        specimen     || null,
+        finalizedAt,
       ]
     );
 
@@ -305,7 +324,7 @@ router.post('/', async (req, res) => {
 // Returns 403 if the report has already been finalized
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { lab_no, patient_id, doctor_id, report_date, status, results } = req.body;
+  const { lab_no, patient_id, doctor_id, report_date, status, specimen, results } = req.body;
 
   // Validate required fields
   if (!patient_id) {
@@ -335,17 +354,24 @@ router.put('/:id', async (req, res) => {
       return res.status(403).json({ error: 'Final reports cannot be edited', code: 'REPORT_FINALIZED' });
     }
 
+    // Set finalized_at when transitioning to final for the first time
+    const isFinal     = (status === 'final');
+    const finalizedAt = isFinal ? new Date() : null;
+
     // Update the report header row
     await client.query(
       `UPDATE reports
-       SET lab_no = $1, patient_id = $2, doctor_id = $3, report_date = $4, status = $5
-       WHERE id = $6`,
+       SET lab_no = $1, patient_id = $2, doctor_id = $3, report_date = $4,
+           status = $5, specimen = $6, finalized_at = $7
+       WHERE id = $8`,
       [
         lab_no.toString().trim(),
         patient_id,
-        doctor_id || null,
+        doctor_id   || null,
         report_date || new Date().toISOString().split('T')[0],
-        status || 'draft',
+        status      || 'draft',
+        specimen    || null,
+        finalizedAt,
         id,
       ]
     );

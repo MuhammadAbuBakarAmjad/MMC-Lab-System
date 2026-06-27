@@ -22,6 +22,7 @@ export default function NewReport() {
   // Step 3 — report details
   const [reportDate, setReportDate] = useState(getTodayAsInputValue())
   const [labNo,      setLabNo]      = useState('')
+  const [specimen,   setSpecimen]   = useState('')
 
   // Step 4 — test selection: Set of template IDs that are checked
   const [checkedTemplateIds, setCheckedTemplateIds] = useState(new Set())
@@ -239,6 +240,7 @@ export default function NewReport() {
       doctor_id:   selectedDoctor?.id || null,
       report_date: reportDate,
       status,
+      specimen:    specimen.trim() || null,
       results:     buildResultsPayload(),
     }
 
@@ -288,8 +290,8 @@ export default function NewReport() {
           </div>
         </div>
 
-        {/* ── Report date + Lab No ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        {/* ── Report date + Lab No + Specimen ── */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Report Date</label>
             <input
@@ -309,6 +311,18 @@ export default function NewReport() {
               onChange={(e) => setLabNo(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Auto-generated"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Specimen <span className="text-xs font-normal text-gray-400">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={specimen}
+              onChange={(e) => setSpecimen(e.target.value)}
+              placeholder="e.g. Blood, Urine"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
         </div>

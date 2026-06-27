@@ -14,13 +14,15 @@ export default function PatientDetail() {
   const [error, setError]             = useState('')
 
   // Edit form state
-  const [isEditing, setIsEditing]     = useState(false)
-  const [isSaving, setIsSaving]       = useState(false)
-  const [saveError, setSaveError]     = useState('')
-  const [editName, setEditName]       = useState('')
-  const [editAge, setEditAge]         = useState('')
-  const [editGender, setEditGender]   = useState('')
-  const [editPhone, setEditPhone]     = useState('')
+  const [isEditing, setIsEditing]                       = useState(false)
+  const [isSaving, setIsSaving]                         = useState(false)
+  const [saveError, setSaveError]                       = useState('')
+  const [editName, setEditName]                         = useState('')
+  const [editAge, setEditAge]                           = useState('')
+  const [editGender, setEditGender]                     = useState('')
+  const [editPhone, setEditPhone]                       = useState('')
+  const [editFatherHusbandName, setEditFatherHusbandName] = useState('')
+  const [editCnic, setEditCnic]                         = useState('')
 
   useEffect(() => {
     loadPatientData()
@@ -49,6 +51,8 @@ export default function PatientDetail() {
     setEditAge(patient.age || '')
     setEditGender(patient.gender || '')
     setEditPhone(patient.phone)
+    setEditFatherHusbandName(patient.father_husband_name || '')
+    setEditCnic(patient.cnic || '')
     setIsEditing(true)
     setSaveError('')
   }
@@ -74,10 +78,12 @@ export default function PatientDetail() {
     setIsSaving(true)
     try {
       const updated = await updatePatient(id, {
-        name:   editName.trim(),
-        age:    editAge.trim() || null,
-        gender: editGender || null,
-        phone:  editPhone.trim(),
+        name:                editName.trim(),
+        age:                 editAge.trim() || null,
+        gender:              editGender || null,
+        phone:               editPhone.trim(),
+        father_husband_name: editFatherHusbandName.trim() || null,
+        cnic:                editCnic.trim() || null,
       })
       setPatient(updated)
       setIsEditing(false)
@@ -178,6 +184,24 @@ export default function PatientDetail() {
                   <option value="Other">Other</option>
                 </select>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Father / Husband Name</label>
+                <input
+                  type="text"
+                  value={editFatherHusbandName}
+                  onChange={(e) => setEditFatherHusbandName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">CNIC</label>
+                <input
+                  type="text"
+                  value={editCnic}
+                  onChange={(e) => setEditCnic(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
             <div className="flex gap-2 pt-1">
               <button
@@ -206,6 +230,18 @@ export default function PatientDetail() {
             <div className="text-gray-900">{patient.gender || '—'}</div>
             <div className="text-gray-500">Phone</div>
             <div className="text-gray-900">{patient.phone}</div>
+            {patient.father_husband_name && (
+              <>
+                <div className="text-gray-500">Father / Husband</div>
+                <div className="text-gray-900">{patient.father_husband_name}</div>
+              </>
+            )}
+            {patient.cnic && (
+              <>
+                <div className="text-gray-500">CNIC</div>
+                <div className="text-gray-900">{patient.cnic}</div>
+              </>
+            )}
           </div>
         )}
       </div>

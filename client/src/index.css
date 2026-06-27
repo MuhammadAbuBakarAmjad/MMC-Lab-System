@@ -8,9 +8,12 @@
   background-color: #F9FAFB;
 }
 
+/* Hidden on screen — only shows as a repeating spacer on printed continuation pages */
+.print-top-spacer { display: none; }
+
 /* Print styles — hide chrome, show only report */
 @media print {
-  /* margin: 0 removes browser-injected date/title/URL from print header and footer */
+  /* margin: 0 removes browser-injected URL/date/title from print header and footer */
   @page { margin: 0; }
 
   .no-print  { display: none !important; }
@@ -19,6 +22,12 @@
   /* Force white background throughout — kills the grey layout wrapper */
   body, html, #root, .flex, main { background: white !important; color: black !important; }
   body { margin: 0; }
+
+  /* Slightly larger base font; padding gives breathing room since @page margin is 0 */
+  .report-container { font-size: 13px; padding: 1.2cm; }
+
+  /* Repeating top spacer — repeats at top of every continuation page via table-header-group */
+  .print-top-spacer { display: table-header-group; visibility: visible; }
 
   .report-section { page-break-inside: avoid; }
   thead { display: table-header-group; }

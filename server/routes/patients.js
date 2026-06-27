@@ -3,7 +3,8 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../db');
 
-// Search patients — search_by controls which field to match: 'name' | 'phone' | 'id'
+// Search patients — search_by controls which field to match:
+// 'name' | 'phone' | 'id' | 'cnic' | 'father'
 // Default is 'name'. Used by PatientSearch component and the Patients list page.
 router.get('/search', async (req, res) => {
   const query    = req.query.q          || '';
@@ -22,6 +23,12 @@ router.get('/search', async (req, res) => {
   } else if (searchBy === 'id') {
     whereClause = 'p.id::text = $1';
     params      = [query];
+  } else if (searchBy === 'cnic') {
+    whereClause = 'p.cnic ILIKE $1';
+    params      = [`%${query}%`];
+  } else if (searchBy === 'father') {
+    whereClause = 'p.father_husband_name ILIKE $1';
+    params      = [`%${query}%`];
   } else {
     // Default: name
     whereClause = 'p.name ILIKE $1';
@@ -36,6 +43,8 @@ router.get('/search', async (req, res) => {
          p.age,
          p.gender,
          p.phone,
+         p.father_husband_name,
+         p.cnic,
          COUNT(r.id) AS report_count
        FROM patients p
        LEFT JOIN reports r ON r.patient_id = p.id
@@ -58,7 +67,8 @@ router.get('/:id', async (req, res) => {
 
   try {
     const result = await db.query(
-      'SELECT id, name, age, gender, phone, created_at FROM patients WHERE id = $1',
+      `SELECT id, name, age, gender, phone, father_husband_name, cnic, created_at
+       FROM patients WHERE id = $1`,
       [id]
     );
 
@@ -105,7 +115,7 @@ router.get('/:id/reports', async (req, res) => {
 
 // Create a new patient
 router.post('/', async (req, res) => {
-  const { name, age, gender, phone } = req.body;
+  const { name, age, gender, phone, father_husband_name, cnic } = req.body;
 
   if (!name || name.trim().length === 0) {
     return res.status(400).json({ error: 'Patient name is required', code: 'NAME_REQUIRED' });
@@ -116,10 +126,17 @@ router.post('/', async (req, res) => {
 
   try {
     const result = await db.query(
-      `INSERT INTO patients (name, age, gender, phone)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, name, age, gender, phone, created_at`,
-      [name.trim(), age || null, gender || null, phone.trim()]
+      `INSERT INTO patients (name, age, gender, phone, father_husband_name, cnic)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id, name, age, gender, phone, father_husband_name, cnic, created_at`,
+      [
+        name.trim(),
+        age    || null,
+        gender || null,
+        phone.trim(),
+        father_husband_name ? father_husband_name.trim() : null,
+        cnic                ? cnic.trim()                : null,
+      ]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -130,8 +147,8 @@ router.post('/', async (req, res) => {
 
 // Update an existing patient
 router.put('/:id', async (req, res) => {
-  const { id }                       = req.params;
-  const { name, age, gender, phone } = req.body;
+  const { id }                                          = req.params;
+  const { name, age, gender, phone, father_husband_name, cnic } = req.body;
 
   if (!name || name.trim().length === 0) {
     return res.status(400).json({ error: 'Patient name is required', code: 'NAME_REQUIRED' });
@@ -143,10 +160,19 @@ router.put('/:id', async (req, res) => {
   try {
     const result = await db.query(
       `UPDATE patients
-       SET name = $1, age = $2, gender = $3, phone = $4
-       WHERE id = $5
-       RETURNING id, name, age, gender, phone, created_at`,
-      [name.trim(), age || null, gender || null, phone.trim(), id]
+       SET name = $1, age = $2, gender = $3, phone = $4,
+           father_husband_name = $5, cnic = $6
+       WHERE id = $7
+       RETURNING id, name, age, gender, phone, father_husband_name, cnic, created_at`,
+      [
+        name.trim(),
+        age    || null,
+        gender || null,
+        phone.trim(),
+        father_husband_name ? father_husband_name.trim() : null,
+        cnic                ? cnic.trim()                : null,
+        id,
+      ]
     );
 
     if (result.rows.length === 0) {

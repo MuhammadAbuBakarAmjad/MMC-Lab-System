@@ -9,6 +9,7 @@ export async function getSettings() {
 }
 
 // Update the lab settings (always updates id = 1)
+// settingsData: { lab_name, address, department, contact_no, footer_note }
 export async function updateSettings(settingsData) {
   const response = await fetch('/api/settings', {
     method:  'PUT',

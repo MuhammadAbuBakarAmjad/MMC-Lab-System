@@ -15,21 +15,25 @@ CREATE TABLE lab_settings (
   lab_name     VARCHAR(255) NOT NULL DEFAULT 'Mashallah Medical Complex, Multan',
   address      TEXT,
   department   VARCHAR(255) DEFAULT 'Department of Pathology',
+  contact_no   VARCHAR(50),
   footer_note  TEXT
 );
 
 -- Patients
 CREATE TABLE patients (
-  id         SERIAL PRIMARY KEY,
-  name       VARCHAR(255) NOT NULL,
-  age        VARCHAR(50),
-  gender     VARCHAR(10) CHECK (gender IN ('Male', 'Female', 'Other')),
-  phone      VARCHAR(20) NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
+  id                  SERIAL PRIMARY KEY,
+  name                VARCHAR(255) NOT NULL,
+  age                 VARCHAR(50),
+  gender              VARCHAR(10) CHECK (gender IN ('Male', 'Female', 'Other')),
+  phone               VARCHAR(20) NOT NULL,
+  father_husband_name VARCHAR(255),
+  cnic                VARCHAR(20),
+  created_at          TIMESTAMP DEFAULT NOW()
 );
 
 CREATE INDEX idx_patients_name  ON patients (name);
 CREATE INDEX idx_patients_phone ON patients (phone);
+CREATE INDEX idx_patients_cnic  ON patients (cnic);
 
 -- Doctors — "Self" is seeded as id=1 for walk-in patients
 CREATE TABLE doctors (
@@ -57,14 +61,16 @@ CREATE INDEX idx_templates_active   ON test_templates (is_active);
 
 -- Lab reports — one row per issued report
 CREATE TABLE reports (
-  id          SERIAL PRIMARY KEY,
-  lab_no      VARCHAR(50),
-  patient_id  INTEGER NOT NULL REFERENCES patients(id),
-  doctor_id   INTEGER REFERENCES doctors(id),
-  report_date DATE NOT NULL DEFAULT CURRENT_DATE,
-  status      VARCHAR(20) DEFAULT 'draft' CHECK (status IN ('draft', 'final')),
-  created_at  TIMESTAMP DEFAULT NOW(),
-  updated_at  TIMESTAMP DEFAULT NOW()
+  id           SERIAL PRIMARY KEY,
+  lab_no       VARCHAR(50) NOT NULL UNIQUE,
+  patient_id   INTEGER NOT NULL REFERENCES patients(id),
+  doctor_id    INTEGER REFERENCES doctors(id),
+  report_date  DATE NOT NULL DEFAULT CURRENT_DATE,
+  status       VARCHAR(20) DEFAULT 'draft' CHECK (status IN ('draft', 'final')),
+  specimen     TEXT,
+  finalized_at TIMESTAMP,
+  created_at   TIMESTAMP DEFAULT NOW(),
+  updated_at   TIMESTAMP DEFAULT NOW()
 );
 
 CREATE INDEX idx_reports_lab_no     ON reports (lab_no);

@@ -3,7 +3,10 @@
 ## What This Is
 A web-based laboratory report management system replacing Excel-based workflows.
 Local LAN deployment only. No internet required. Single lab, single location.
-Read the full planning docs in /docs before writing any code.
+
+## Project Status
+All 7 phases are complete and the system is production-ready.
+Read the docs in /docs before making any changes.
 
 ## Read These First (in order)
 1. docs/PROJECT_OVERVIEW.md
@@ -18,40 +21,12 @@ Read the full planning docs in /docs before writing any code.
 
 ## Skills to Use
 
-Install these before starting. They load context that saves tokens and produces better output.
+Run these before the relevant work:
 
-### Frontend Design (install first, most important)
-```
-claude plugin marketplace add anthropics/claude-code
-claude plugin install frontend-design@claude-code
-```
-Invoke before building ANY page or component: `/frontend-design`
-This prevents generic AI-looking UI (Inter font, purple gradients, grid cards).
-It gives Claude a design philosophy before touching code.
-
-### PostgreSQL Best Practices
-```
-claude plugin marketplace add timescale/pg-aiguide
-claude plugin install pg@aiguide
-```
-Invoke when writing any SQL, schema, or query: `/pg`
-Catches table locking hazards, missing indexes, unsafe operations, and bad query patterns.
-
-### Code Simplifier (run after each phase)
-```
-claude plugin install code-simplifier@claude-plugins-official
-```
-Invoke after completing each phase: `/simplify`
-Removes duplication, flattens nested conditionals, rewrites compact expressions into readable ones.
-Constraint: never changes behavior — only how it's expressed.
-
-### Karpathy Behavioral Guards
-```
-claude plugin marketplace add forrestchang/andrej-karpathy-skills
-claude plugin install andrej-karpathy-skills@karpathy-skills
-```
-No explicit invocation needed — loads behavioral guardrails automatically.
-Prevents: silent wrong assumptions, over-engineering, and touching code it wasn't asked to touch.
+- `/frontend-design` — before building or changing any page or component
+- `/pg` — before writing any SQL, schema, or query
+- `/simplify` — after completing any significant change
+- `/code-review` — before committing a set of changes
 
 ---
 
@@ -143,12 +118,18 @@ lab-system/
 │   ├── routes/           ← one file per resource
 │   ├── db/
 │   │   ├── index.js      ← exports pg Pool (single instance, imported everywhere)
+│   │   ├── init.js       ← drops/recreates tables and seeds data: node server/db/init.js
 │   │   ├── schema.sql
 │   │   └── seed.sql
+│   ├── .env              ← DB credentials and config (not committed)
+│   ├── .env.example      ← template for new installs
 │   └── index.js
 ├── backup/
-│   └── backup.js
+│   └── backup.js         ← nightly pg_dump, run via Windows Task Scheduler
+├── backups/              ← runtime backup files, gitignored
 ├── docs/                 ← planning documents (read-only, do not modify)
+├── start.bat             ← starts server + client dev mode, opens browser
+├── update.bat            ← git pull + npm install + rebuild frontend
 └── CLAUDE.md
 ```
 
@@ -234,20 +215,10 @@ Print view = zero UI chrome. Sidebar gone. Buttons gone. Report only.
 
 ---
 
-## Build Order
-Follow IMPLEMENTATION_PLAN.md phases exactly:
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7
-Complete phase test checklist before starting next phase.
-Run `/simplify` after each phase completes.
-Commit after each passing phase: "Phase X complete — all tests passing"
-
----
-
 ## /compact Policy
 When summarizing this conversation preserve:
 - All database schema decisions and any changes made
 - API endpoint signatures and their validation rules
-- Which phases are complete and which tests passed
 - Any bugs found and how they were fixed
 - List of all files created or modified
 - Any deviations from the spec and why

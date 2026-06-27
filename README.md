@@ -14,7 +14,8 @@ Runs on your local network (LAN) — no internet connection required.
 5. [Setting Up Nightly Backup](#5-setting-up-nightly-backup-windows-task-scheduler)
 6. [Restoring from a Backup](#6-restoring-from-a-backup)
 7. [Adding New Test Templates](#7-adding-new-test-templates)
-8. [Troubleshooting](#8-troubleshooting)
+8. [Updating the System](#8-updating-the-system)
+9. [Troubleshooting](#9-troubleshooting)
 
 ---
 
@@ -73,7 +74,7 @@ Copy the example config file:
 copy C:\lab-system\server\.env.example C:\lab-system\server\.env
 ```
 
-If there is no `.env.example`, create a new file at `C:\lab-system\server\.env` and paste this into it:
+Open the file at `C:\lab-system\server\.env` and fill in your PostgreSQL password:
 ```
 DB_HOST=localhost
 DB_PORT=5432
@@ -340,7 +341,30 @@ The new template will appear immediately on the Create Report page.
 
 ---
 
-## 8. Troubleshooting
+## 8. Updating the System
+
+When you receive a new version of the system (via Git), run the update script instead of updating manually:
+
+```
+double-click update.bat
+```
+
+or from Command Prompt:
+```
+cd C:\lab-system
+update.bat
+```
+
+This will:
+1. Pull the latest code from Git
+2. Install any new server packages
+3. Rebuild the frontend
+
+After it finishes, restart the server.
+
+---
+
+## 9. Troubleshooting
 
 ### The server won't start
 

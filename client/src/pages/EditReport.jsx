@@ -22,6 +22,7 @@ export default function EditReport() {
   // Report header fields
   const [reportDate, setReportDate] = useState('')
   const [labNo,      setLabNo]      = useState('')
+  const [specimen,   setSpecimen]   = useState('')
 
   // Set of checked template IDs
   const [checkedTemplateIds, setCheckedTemplateIds] = useState(new Set())
@@ -76,6 +77,7 @@ export default function EditReport() {
     // Header fields
     setLabNo(report.lab_no)
     setReportDate(report.report_date?.split('T')[0] || '')
+    setSpecimen(report.specimen || '')
 
     // Patient and doctor — shape must match what PatientSearch/DoctorSearch expect
     setSelectedPatient({
@@ -268,6 +270,7 @@ export default function EditReport() {
       doctor_id:   selectedDoctor?.id || null,
       report_date: reportDate,
       status,
+      specimen:    specimen.trim() || null,
       results:     buildResultsPayload(),
     }
 
@@ -340,7 +343,7 @@ export default function EditReport() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Report Date</label>
             <input
@@ -358,6 +361,18 @@ export default function EditReport() {
               type="text"
               value={labNo}
               onChange={(e) => setLabNo(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Specimen <span className="text-xs font-normal text-gray-400">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={specimen}
+              onChange={(e) => setSpecimen(e.target.value)}
+              placeholder="e.g. Blood, Urine"
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>

@@ -108,12 +108,18 @@ lab-system/
 ├── server/          ← Express backend
 │   ├── routes/
 │   ├── db/
+│   │   ├── index.js     ← pg Pool export
+│   │   ├── init.js      ← drop/recreate tables + seed: node server/db/init.js
 │   │   ├── schema.sql
 │   │   └── seed.sql
+│   ├── .env             ← DB credentials (not committed)
+│   ├── .env.example     ← template for new installs
 │   └── package.json
 ├── backup/
 │   └── backup.js
 ├── backups/         ← created at runtime, gitignored
+├── start.bat        ← dev startup script
+├── update.bat       ← git pull + rebuild
 └── README.md
 ```
 

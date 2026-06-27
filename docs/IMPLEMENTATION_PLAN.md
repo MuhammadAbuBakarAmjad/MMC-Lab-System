@@ -1,8 +1,13 @@
 # Implementation Plan
 
+## Status: All 7 phases complete (as of June 2026)
+This document is preserved as a reference. All phases passed their test checklists.
+For new features or changes, read the existing code and follow the patterns already established.
+
+---
+
 ## How to Use This Document
-Build in phases, in order. Do not start Phase 2 before Phase 1 passes all its tests.
-Each phase ends with a testing checklist — verify every item before moving on.
+Phases were built in order. Each phase ended with a testing checklist.
 Read ALL documents before writing any code:
 - PROJECT_OVERVIEW.md
 - DATABASE_SCHEMA.md
@@ -72,7 +77,7 @@ Create a script server/db/init.js that:
 
 **5. Frontend setup**
 - Initialize React + Vite project in /client
-- Install: react-router-dom, axios (or use fetch)
+- Install: react-router-dom (use native fetch — no axios)
 - Install Tailwind CSS and configure it
 - Create basic App.jsx with React Router set up
 - Create placeholder page components for all 5 routes:

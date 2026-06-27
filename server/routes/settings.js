@@ -8,7 +8,7 @@ const db      = require('../db');
 router.get('/', async (req, res) => {
   try {
     const result = await db.query(
-      'SELECT id, lab_name, address, department, footer_note FROM lab_settings WHERE id = 1'
+      'SELECT id, lab_name, address, department, contact_no, footer_note FROM lab_settings WHERE id = 1'
     );
 
     if (result.rows.length === 0) {
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 // Update the single lab settings row
 // Always updates id = 1 — there is no other row
 router.put('/', async (req, res) => {
-  const { lab_name, address, department, footer_note } = req.body;
+  const { lab_name, address, department, contact_no, footer_note } = req.body;
 
   if (!lab_name || lab_name.trim().length === 0) {
     return res.status(400).json({ error: 'Lab name is required', code: 'NAME_REQUIRED' });
@@ -37,13 +37,15 @@ router.put('/', async (req, res) => {
        SET lab_name    = $1,
            address     = $2,
            department  = $3,
-           footer_note = $4
+           contact_no  = $4,
+           footer_note = $5
        WHERE id = 1
-       RETURNING id, lab_name, address, department, footer_note`,
+       RETURNING id, lab_name, address, department, contact_no, footer_note`,
       [
         lab_name.trim(),
-        address     || null,
-        department  || null,
+        address    || null,
+        department || null,
+        contact_no || null,
         footer_note || null,
       ]
     );

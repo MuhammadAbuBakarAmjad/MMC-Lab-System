@@ -68,7 +68,7 @@ export default function ReportsList() {
 
   // Filter state
   const [searchText, setSearchText]   = useState('');
-  const [searchBy, setSearchBy]       = useState('name'); // 'name' | 'phone' | 'lab_no'
+  const [searchBy, setSearchBy]       = useState('name'); // 'name' | 'phone' | 'lab_no' | 'cnic' | 'father'
   const [fromDate, setFromDate]       = useState('');
   const [toDate, setToDate]           = useState('');
   const [selectedDoctorId, setSelectedDoctorId] = useState('');
@@ -170,6 +170,7 @@ export default function ReportsList() {
     setCurrentPage(1);
   }
 
+
   const hasActiveFilters = searchText || fromDate || toDate || selectedDoctorId || selectedStatus;
 
   return (
@@ -203,6 +204,8 @@ export default function ReportsList() {
                 <option value="name">Name</option>
                 <option value="phone">Phone</option>
                 <option value="lab_no">Lab No</option>
+                <option value="father">F/H Name</option>
+                <option value="cnic">CNIC</option>
               </select>
               <input
                 id="search-reports"
@@ -210,8 +213,10 @@ export default function ReportsList() {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder={
-                  searchBy === 'phone'  ? 'Search by phone number...' :
-                  searchBy === 'lab_no' ? 'Search by lab number...'   :
+                  searchBy === 'phone'  ? 'Search by phone number...'       :
+                  searchBy === 'lab_no' ? 'Search by lab number...'         :
+                  searchBy === 'cnic'   ? 'Search by CNIC...'               :
+                  searchBy === 'father' ? 'Search by father/husband name...' :
                   'Search by patient name...'
                 }
                 className="flex-1 min-w-0 px-3 py-1.5 text-sm border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"

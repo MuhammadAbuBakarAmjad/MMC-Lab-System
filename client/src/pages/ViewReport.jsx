@@ -2,33 +2,39 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { getReportById } from '../api/reports'
 import { getSettings } from '../api/settings'
-import { formatDateForDisplay } from '../utils/dates'
+import { formatDateForDisplay, formatTimeForDisplay } from '../utils/dates'
+
+const DISCLAIMER =
+  'All tests are performed on advanced and appropriate state-of-the-art instruments under strict ' +
+  'quality control conditions. However, the above results are not a diagnosis and should be correlated ' +
+  'with the patient’s clinical findings, history, signs and symptoms, and other diagnostic tests. ' +
+  'Laboratory-to-laboratory variations may occur. This document is not valid for legal/court proceedings.'
 
 // ─── Result display components (read-only, for the printed report) ────────────
 
-// Displays standard and hormones result rows as a full-width table
+// Standard and hormones: four-column table (Test Name | Result | Unit | Normal Value)
 function ResultTable({ result }) {
-  const { report_type, result_data, template_name } = result;
+  const { report_type, result_data } = result;
   const isHormones = report_type === 'hormones';
   const fields = result_data.fields || [];
 
   return (
-    <table className="w-full text-sm border-collapse">
+    <table className="w-full border-collapse" style={{ fontSize: 'inherit' }}>
       <thead>
-        <tr className="border-b border-gray-300">
-          <th className="text-left py-1 pr-3 font-semibold text-gray-700 w-[40%]">TEST NAME</th>
-          <th className="text-left py-1 pr-3 font-semibold text-gray-700 w-[15%]">REPORT</th>
-          <th className="text-left py-1 pr-3 font-semibold text-gray-700 w-[15%]">UNIT</th>
-          <th className="text-left py-1 font-semibold text-gray-700 w-[30%]">NORMAL VALUE</th>
+        <tr className="border-b-2 border-gray-400">
+          <th className="text-left py-1.5 pr-3 font-semibold text-gray-800 w-[38%]">TEST NAME</th>
+          <th className="text-left py-1.5 pr-3 font-semibold text-gray-800 w-[15%]">RESULT</th>
+          <th className="text-left py-1.5 pr-3 font-semibold text-gray-800 w-[15%]">UNIT</th>
+          <th className="text-left py-1.5 font-semibold text-gray-800 w-[32%]">NORMAL VALUE</th>
         </tr>
       </thead>
       <tbody>
         {fields.map((field, index) => (
-          <tr key={index} className="border-b border-gray-100">
-            <td className="py-1 pr-3 text-gray-800">{field.name}</td>
-            <td className="py-1 pr-3 font-medium text-gray-900">{field.result || ''}</td>
-            <td className="py-1 pr-3 text-gray-600">{field.unit || ''}</td>
-            <td className="py-1 text-gray-600">
+          <tr key={index} className="border-b border-gray-200">
+            <td className="py-1.5 pr-3 text-gray-800">{field.name}</td>
+            <td className="py-1.5 pr-3 font-semibold text-gray-900">{field.result || ''}</td>
+            <td className="py-1.5 pr-3 text-gray-600">{field.unit || ''}</td>
+            <td className="py-1.5 text-gray-600">
               {isHormones
                 ? <NormalValueHormones text={field.normal_value_text} />
                 : <NormalValueStandard male={field.normal_male} female={field.normal_female} />
@@ -41,13 +47,13 @@ function ResultTable({ result }) {
   );
 }
 
-// Shows M:/F: split if values differ, single value if they match
+// Shows M:/F: split when values differ, single value when they match
 function NormalValueStandard({ male, female }) {
   if (!male && !female) return null;
   if (male === female) return <span>{male}</span>;
   return (
     <span className="whitespace-pre-line">
-      {'M: ' + (male || '-') + '\nF: ' + (female || '-')}
+      {'M: ' + (male || '—') + '\nF: ' + (female || '—')}
     </span>
   );
 }
@@ -58,23 +64,23 @@ function NormalValueHormones({ text }) {
   return <span className="whitespace-pre-line">{text}</span>;
 }
 
-// Qualitative result: two-column table (Test Name | Result)
+// Qualitative: two-column table (Test Name | Result)
 function QualitativeTable({ result }) {
   const fields = result.result_data.fields || [];
 
   return (
-    <table className="w-full text-sm border-collapse">
+    <table className="w-full border-collapse" style={{ fontSize: 'inherit' }}>
       <thead>
-        <tr className="border-b border-gray-300">
-          <th className="text-left py-1 pr-3 font-semibold text-gray-700 w-[60%]">TEST NAME</th>
-          <th className="text-left py-1 font-semibold text-gray-700 w-[40%]">REPORT</th>
+        <tr className="border-b-2 border-gray-400">
+          <th className="text-left py-1.5 pr-3 font-semibold text-gray-800 w-[60%]">TEST NAME</th>
+          <th className="text-left py-1.5 font-semibold text-gray-800 w-[40%]">RESULT</th>
         </tr>
       </thead>
       <tbody>
         {fields.map((field, index) => (
-          <tr key={index} className="border-b border-gray-100">
-            <td className="py-1 pr-3 text-gray-800">{field.name}</td>
-            <td className="py-1 font-medium text-gray-900">{field.result || ''}</td>
+          <tr key={index} className="border-b border-gray-200">
+            <td className="py-1.5 pr-3 text-gray-800">{field.name}</td>
+            <td className="py-1.5 font-semibold text-gray-900">{field.result || ''}</td>
           </tr>
         ))}
       </tbody>
@@ -82,7 +88,7 @@ function QualitativeTable({ result }) {
   );
 }
 
-// Descriptive result: sub-sections each with their own field rows
+// Descriptive: sub-sections each with their own rows (Urine R/E, Stool, Semen)
 function DescriptiveTable({ result }) {
   const sections = result.result_data.sections || [];
 
@@ -90,17 +96,19 @@ function DescriptiveTable({ result }) {
     <div className="space-y-3">
       {sections.map((section, sectionIndex) => (
         <div key={sectionIndex}>
-          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+          <div className="text-xs font-bold text-gray-600 uppercase tracking-wide bg-gray-50 px-2 py-0.5 mb-1">
             {section.heading}
           </div>
-          <table className="w-full text-sm border-collapse">
+          <table className="w-full border-collapse" style={{ fontSize: 'inherit' }}>
             <tbody>
               {(section.fields || []).map((field, fieldIndex) => (
                 <tr key={fieldIndex} className="border-b border-gray-100">
-                  <td className="py-1 pr-3 text-gray-800 w-[50%]">{field.name}</td>
-                  <td className="py-1 font-medium text-gray-900">
+                  <td className="py-1.5 pr-3 text-gray-800 w-[50%]">{field.name}</td>
+                  <td className="py-1.5 font-semibold text-gray-900">
                     {field.result || ''}
-                    {field.unit ? <span className="text-gray-500 ml-1 font-normal">{field.unit}</span> : null}
+                    {field.unit
+                      ? <span className="text-gray-500 ml-1 font-normal">{field.unit}</span>
+                      : null}
                   </td>
                 </tr>
               ))}
@@ -129,60 +137,109 @@ function ResultDisplay({ result }) {
 
 // ─── Report layout components ─────────────────────────────────────────────────
 
-// Lab name, department, and patient info block at the top of the report
+// Lab identity block + patient info — prints only on page 1 (lives in tbody, not thead)
 function ReportHeader({ report, settings }) {
-  const labName   = settings?.lab_name   || 'Mashallah Medical Complex, Multan';
+  const labName    = settings?.lab_name   || 'Mashallah Medical Complex, Multan';
   const department = settings?.department || 'Department of Pathology';
-  const { patient, doctor, lab_no, report_date } = report;
+  const contactNo  = settings?.contact_no || '';
+  const { patient, doctor, lab_no, report_date, specimen, finalized_at } = report;
+
+  const finalizedTime = formatTimeForDisplay(finalized_at);
 
   return (
-    <div className="mb-4">
-      {/* Lab identity */}
-      <div className="text-center mb-3">
-        <div className="text-lg font-bold text-gray-900 uppercase tracking-wide">{labName}</div>
-        <div className="text-sm text-gray-600">{department}</div>
+    <div className="mb-3">
+      {/* ── Lab identity: logo left, text right ── */}
+      <div className="flex items-center gap-4 mb-3">
+        <img
+          src="/logo.png"
+          alt="Lab Logo"
+          className="h-24 w-auto object-contain flex-shrink-0"
+          onError={(e) => { e.target.style.display = 'none'; }}
+        />
+        <div className="flex-1 text-center">
+          <div className="text-xl font-bold text-gray-900 uppercase tracking-wide leading-tight">
+            {labName}
+          </div>
+          <div className="text-sm text-gray-600 mt-0.5">{department}</div>
+          {contactNo && (
+            <div className="text-sm text-gray-500 mt-0.5">
+              <span className="font-semibold">Contact No:</span> {contactNo}
+            </div>
+          )}
+        </div>
       </div>
 
-      <hr className="border-gray-400 mb-3" />
+      <hr className="border-gray-500 mb-3" />
 
-      {/* Patient and report details */}
-      <div className="grid grid-cols-2 gap-x-4 text-sm">
-        <div>
-          <span className="font-semibold text-gray-700">Patient Name: </span>
-          <span className="text-gray-900">{patient.name}</span>
-        </div>
-        <div className="text-right">
-          <span className="font-semibold text-gray-700">Lab No: </span>
-          <span className="text-gray-900 font-bold">{lab_no}</span>
-        </div>
-        <div>
-          <span className="font-semibold text-gray-700">Age: </span>
-          <span className="text-gray-900">{patient.age || '—'}</span>
-          <span className="mx-3">
-            <span className="font-semibold text-gray-700">Sex: </span>
+      {/* ── Patient info: left column demographics, right column report metadata ── */}
+      <div className="grid grid-cols-2 gap-x-6 text-sm">
+        {/* Left: patient demographics — one field per line */}
+        <div className="space-y-1">
+          <div>
+            <span className="font-semibold text-gray-700">Patient Name:&nbsp;</span>
+            <span className="text-gray-900 font-medium">{patient.name}</span>
+          </div>
+          <div>
+            <span className="font-semibold text-gray-700">Age:&nbsp;</span>
+            <span className="text-gray-900">{patient.age || '—'}</span>
+          </div>
+          <div>
+            <span className="font-semibold text-gray-700">Sex:&nbsp;</span>
             <span className="text-gray-900">{patient.gender || '—'}</span>
-          </span>
+          </div>
+          {patient.father_husband_name && (
+            <div>
+              <span className="font-semibold text-gray-700">F/H Name:&nbsp;</span>
+              <span className="text-gray-900">{patient.father_husband_name}</span>
+            </div>
+          )}
+          {patient.cnic && (
+            <div>
+              <span className="font-semibold text-gray-700">CNIC:&nbsp;</span>
+              <span className="text-gray-900">{patient.cnic}</span>
+            </div>
+          )}
+          <div>
+            <span className="font-semibold text-gray-700">Referred By:&nbsp;</span>
+            <span className="text-gray-900">
+              {!doctor?.name || doctor.name === 'Self' ? 'Self' : `Dr. ${doctor.name}`}
+            </span>
+          </div>
         </div>
-        <div className="text-right">
-          <span className="font-semibold text-gray-700">Date: </span>
-          <span className="text-gray-900">{formatDateForDisplay(report_date)}</span>
-        </div>
-        <div>
-          <span className="font-semibold text-gray-700">Referred By: </span>
-          <span className="text-gray-900">
-            {doctor?.name ? `Dr. ${doctor.name}` : '—'}
-          </span>
+
+        {/* Right: report metadata — one field per line */}
+        <div className="space-y-1">
+          <div>
+            <span className="font-semibold text-gray-700">Lab No:&nbsp;</span>
+            <span className="text-gray-900 font-bold">{lab_no}</span>
+          </div>
+          <div>
+            <span className="font-semibold text-gray-700">Date:&nbsp;</span>
+            <span className="text-gray-900">{formatDateForDisplay(report_date)}</span>
+          </div>
+          {finalizedTime && (
+            <div>
+              <span className="font-semibold text-gray-700">Time of Generation:&nbsp;</span>
+              <span className="text-gray-900">{finalizedTime}</span>
+            </div>
+          )}
+          {specimen && (
+            <div>
+              <span className="font-semibold text-gray-700">Specimen:&nbsp;</span>
+              <span className="text-gray-900">{specimen}</span>
+            </div>
+          )}
         </div>
       </div>
 
-      <hr className="border-gray-400 mt-3" />
+      <hr className="border-gray-500 mt-3" />
     </div>
   );
 }
 
-// Groups results by category and renders each as a section
+// Groups results by category, renders each section with a shaded heading
 function ReportBody({ results }) {
-  // Group results by category, maintaining first-appearance order
+  // Group by category, preserving first-appearance order
   const categoryOrder = [];
   const groupedByCategory = {};
 
@@ -196,18 +253,21 @@ function ReportBody({ results }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {categoryOrder.map((category) => (
         <div key={category} className="report-section">
-          <div className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-2 border-b border-gray-200 pb-1">
+          {/* Shaded section heading — visually separates test groups */}
+          <div className="font-bold text-gray-900 uppercase tracking-wide px-3 py-1.5 bg-gray-200 mb-2">
             {category}
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 px-1">
             {groupedByCategory[category].map((result) => (
               <div key={result.id}>
-                {/* Only show test name sub-heading if multiple tests are in the same category */}
+                {/* Show individual test name only when multiple tests share a category */}
                 {groupedByCategory[category].length > 1 && (
-                  <div className="text-xs font-semibold text-gray-500 mb-1">{result.template_name}</div>
+                  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    {result.template_name}
+                  </div>
                 )}
                 <ResultDisplay result={result} />
               </div>
@@ -219,22 +279,37 @@ function ReportBody({ results }) {
   );
 }
 
-// Footer with lab note and signature line
-function ReportFooter({ settings }) {
+// Footer — repeats on every printed page via tfoot
+// printTime is set just before window.print() is called; it shows "Reported On" only on the printout
+function ReportFooter({ settings, printTime }) {
   const footerNote = settings?.footer_note || '';
 
   return (
     <tfoot>
       <tr>
-        <td className="pb-[1cm]">
-          <div className="mt-6 pt-3 border-t border-gray-400">
-            <div className="flex justify-between items-end text-sm">
-              <div className="text-gray-600 max-w-[60%] text-xs leading-relaxed">{footerNote}</div>
-              <div className="text-right">
-                <div className="text-gray-700 font-medium mb-4">Signature</div>
-                <div className="border-b border-gray-800 w-36"></div>
-              </div>
+        <td className="pb-8">
+          <div className="mt-6 pt-3 border-t border-gray-400 space-y-2">
+            {/* User-configurable footer note from Settings */}
+            {footerNote && (
+              <div className="text-xs text-gray-600 leading-relaxed">{footerNote}</div>
+            )}
+
+            {/* Electronic verification notice */}
+            <div className="text-xs text-gray-500 font-medium">
+              Electronically Verified &mdash; No Signature Required
             </div>
+
+            {/* Legal disclaimer — very small but readable */}
+            <div className="text-[10px] text-gray-400 leading-relaxed">
+              {DISCLAIMER}
+            </div>
+
+            {/* Reported On — only appears on actual printout, not on screen before printing */}
+            {printTime && (
+              <div className="text-xs text-gray-500 text-right pt-1">
+                Reported On: {printTime}
+              </div>
+            )}
           </div>
         </td>
       </tr>
@@ -247,10 +322,12 @@ function ReportFooter({ settings }) {
 export default function ViewReport() {
   const { id }        = useParams();
   const navigate      = useNavigate();
-  const [report, setReport]     = useState(null);
-  const [settings, setSettings] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [report, setReport]         = useState(null);
+  const [settings, setSettings]     = useState(null);
+  const [isLoading, setIsLoading]   = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  // printTime is stamped when the user clicks Print — appears in footer only on the printout
+  const [printTime, setPrintTime]   = useState('');
 
   useEffect(() => {
     loadReportData();
@@ -260,7 +337,7 @@ export default function ViewReport() {
     setIsLoading(true);
     setErrorMessage('');
     try {
-      // Load report and settings in parallel — both are needed before rendering
+      // Load report and settings in parallel — both needed before rendering
       const [reportData, settingsData] = await Promise.all([
         getReportById(id),
         getSettings(),
@@ -273,6 +350,15 @@ export default function ViewReport() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  // Stamp the print time, then open the print dialog after React re-renders
+  function handlePrint() {
+    const now = new Date();
+    setPrintTime(
+      formatDateForDisplay(now.toISOString()) + '  ' + formatTimeForDisplay(now.toISOString())
+    );
+    setTimeout(() => window.print(), 80);
   }
 
   if (isLoading) {
@@ -319,7 +405,7 @@ export default function ViewReport() {
             </span>
           )}
 
-          {/* Edit button — only for draft reports */}
+          {/* Edit — only for drafts */}
           {isDraft && (
             <button
               onClick={() => navigate(`/reports/${id}/edit`)}
@@ -330,7 +416,7 @@ export default function ViewReport() {
           )}
 
           <button
-            onClick={() => window.print()}
+            onClick={handlePrint}
             className="px-4 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium"
           >
             Print / Save PDF
@@ -339,13 +425,22 @@ export default function ViewReport() {
       </div>
 
       {/* Report content — this is what gets printed */}
-      <div className="report-container bg-white p-8 shadow-sm border border-gray-200 print:shadow-none print:border-none print:p-[1cm]">
+      <div className="report-container bg-white p-8 shadow-sm border border-gray-200 print:shadow-none print:border-none">
         {/*
-          Outer table structure enables the tfoot footer-repeat-on-every-page trick.
-          ReportHeader goes in tbody row 1 (NOT in thead) so it prints only on page 1.
-          ReportFooter renders a <tfoot> which repeats on every printed page.
+          Outer table structure makes the tfoot repeat on every printed page.
+          ReportHeader is in tbody row 1 (NOT thead) so it only prints on page 1.
+          ReportFooter renders a <tfoot> which repeats on every page automatically.
         */}
         <table className="w-full">
+          {/*
+            print-top-spacer repeats at the top of every continuation page via
+            table-header-group — giving ~1cm breathing room so content never
+            hits the very top of the paper. Hidden on screen (height 0).
+          */}
+          {/* Repeats at top of every continuation page — invisible on screen */}
+          <thead className="print-top-spacer">
+            <tr><td style={{ height: '1cm' }}></td></tr>
+          </thead>
           <tbody>
             <tr>
               <td className="p-0">
@@ -353,13 +448,13 @@ export default function ViewReport() {
               </td>
             </tr>
             <tr>
-              <td className="pt-4">
+              <td className="pt-3">
                 <ReportBody results={report.results} />
               </td>
             </tr>
           </tbody>
 
-          <ReportFooter settings={settings} />
+          <ReportFooter settings={settings} printTime={printTime} />
         </table>
       </div>
     </div>

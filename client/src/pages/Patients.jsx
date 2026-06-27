@@ -6,7 +6,7 @@ import { searchPatients } from '../api/patients'
 export default function Patients() {
   const [patients, setPatients]     = useState([])
   const [searchText, setSearchText] = useState('')
-  const [searchBy, setSearchBy]     = useState('name') // 'name' | 'phone' | 'id'
+  const [searchBy, setSearchBy]     = useState('name') // 'name' | 'phone' | 'id' | 'cnic' | 'father'
   const [isLoading, setIsLoading]   = useState(true)
   const [error, setError]           = useState('')
 
@@ -69,6 +69,8 @@ export default function Patients() {
             <option value="name">Name</option>
             <option value="phone">Phone</option>
             <option value="id">ID</option>
+            <option value="father">F/H Name</option>
+            <option value="cnic">CNIC</option>
           </select>
           <input
             id="patient-search"
@@ -76,8 +78,10 @@ export default function Patients() {
             value={searchText}
             onChange={handleSearchInput}
             placeholder={
-              searchBy === 'phone' ? 'Search by phone number...' :
-              searchBy === 'id'    ? 'Search by patient ID...'   :
+              searchBy === 'phone'  ? 'Search by phone number...'       :
+              searchBy === 'id'     ? 'Search by patient ID...'         :
+              searchBy === 'cnic'   ? 'Search by CNIC...'               :
+              searchBy === 'father' ? 'Search by father/husband name...' :
               'Search by patient name...'
             }
             className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-r-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
