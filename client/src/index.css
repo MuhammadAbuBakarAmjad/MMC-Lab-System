@@ -23,8 +23,8 @@
   body, html, #root, .flex, main { background: white !important; color: black !important; }
   body { margin: 0; }
 
-  /* Slightly larger base font; padding gives breathing room since @page margin is 0 */
-  .report-container { font-size: 13px; padding: 1.2cm; }
+  /* Slightly larger base font; no top padding — the repeating spacer thead handles all pages */
+  .report-container { font-size: 13px; padding: 0 1.2cm 1.2cm 1.2cm; }
 
   /* Repeating top spacer — repeats at top of every continuation page via table-header-group */
   .print-top-spacer { display: table-header-group; visibility: visible; }
